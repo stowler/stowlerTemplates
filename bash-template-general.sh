@@ -1,9 +1,9 @@
 #!/bin/bash
 #
 # LOCATION:	<location including filename>
-# USAGE:	(see fxnPrintUsage() function below)
+# USAGE:	see fxnPrintUsage() function below
 #
-# CREATED:      <date> by stowler@gmail.com
+# CREATED:        <date> by stowler@gmail.com
 # LAST UPDATED:	<date> by stowler@gmail.com
 #
 # DESCRIPTION:
@@ -43,30 +43,40 @@ fxnPrintUsage() {
 
 
 fxnSetTempDir(){
-   # Create a temporary directory ${tempDir} , as a child of ${tempParent}, which is set prior to calling this fxn.
+   # Create a temporary directory ${tempDir} 
+   # This will be a child of directory ${tempParent}, which maybe set prior to calling this fxn, 
+   # or will be set to something sensible by this function.
    #
    # NB: ${tempParent} might need to change on a per-system, per-script, or per-experiment, basis
    #    If tempParent or tempDir needs to include identifying information from the script,
    #    remember to assign values before calling fxnSetTempDir!)
    #    e.g., tempParent=${participantDirectory}/manyTempProcessingDirsForThisParticipant && fxnSetTempDir()
+
+   # first manage ${tempParent}: 
+   # is it already defined as a writable directory? If not, try to define a reasonable one:
+   tempParentPrevouslySetToWritableDir=''
    hostname=`hostname -s`
    kernel=`uname -s`
-   if [ $hostname = "stowler-mba" ]; then
+   if [ -n "${tempParent}"] && [ -d "${tempParent}" ] && [ -w "${tempParent}" ]; then
+      tempParentPreviouslySetToWritableDir=1
+   elif [ $hostname = "stowler-mba" ]; then
       tempParent="/Users/stowler/temp"
    elif [ $kernel = "Linux" ] && [ -d /tmp ] && [ -w /tmp ]; then
       tempParent="/tmp"
    elif [ $kernel = "Darwin" ] && [ -d /tmp ] && [ -w /tmp ]; then
       tempParent="/tmp"
    else
-      echo "Cannot find a suitable parent in which to create a temporary directory. Edit script's $tempParent variable. Exiting."
+      echo "fxnSetTempDir cannot find a suitable parent directory in which to create a new temporary directory. Edit script's $tempParent variable. Exiting."
       exit 1
    fi
+
+   # Now that writable ${tempParent} has been confirmed, create ${tempDir}:
    # e.g., tempDir="${tempParent}/${startDateTime}-from_${scriptName}.${scriptPID}"
    tempDir="${tempParent}/${startDateTime}-from_${scriptName}.${scriptPID}"
-   mkdir $tempDir
+   mkdir ${tempDir}
    if [ $? -ne 0 ] ; then
       echo ""
-      echo "ERROR: unable to create temporary directory ${tempDir}."
+      echo "ERROR: fxnSetTempDir was unable to create temporary directory ${tempDir}."
       echo 'You may want to confirm the location and permissions of ${tempParent}, which is understood as:'
       echo "${tempParent}"
       echo ""
