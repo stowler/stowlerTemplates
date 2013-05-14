@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # LOCATION:	<location including filename>
-# USAGE:	see fxnPrintUsage() function below
+# USAGE:	see fxnPrintUsage() function below 
 #
 # CREATED:        <date> by stowler@gmail.com
 # LAST UPDATED:	<date> by stowler@gmail.com
@@ -20,25 +20,77 @@
 # <list or describe>
 #
 # READING AND CODING NOTES:
+# 
 # This script contains a few first-level sections, each starting with one of these headings:
 # ------------------------- START: define functions ------------------------- #
 # ------------------------- START: define constants ------------------------- #
 # ------------------------- START: process the invocation ------------------------- #
 # ------------------------- START: greet user/logs ------------------------- #
-# ------------------------- START: body of program ------------------------- #
+# ------------------------- START: body of script ------------------------- #
 # ------------------------- START: restore environment and say bye to user/logs ------------------------- #
+#
+# Search for "EDITME" to find areas that may need to be edited on a per-system/per-experiment/per-whatever basis.
+# Search for "TBD" to find areas where I have work to do, decisions to make, etc. TBD.
+#
+########### !!!!!!! FOR TEMPLATE ONLY. REMOVE FROM CHILD SCRIPTS: !!!!!!! ###########
+# A meta note for editing this template :
+#
+# Location: 
+# https://github.com/stowler/stowlerTemplates/edit/master/bash-template-general.sh
+#
+# Design:
+# - avoid references to external files  
+# - include just enough internal functions so that reasonable child scripts can stand on their own.
+#
+# Minding pedagogy: 
+# - Don't over-functionalize the template. It provides babysteps for trainees who don't yet understand internal functions:
+#    - banners: they're a good place for a brand-new trainee to make superficial edits and see how output is affected
+#    - define constants section: trainees will learn to edit variables there even before they understand functions
+#    - invocation and restoration sections: trainees will learn to create functions from these
+# - Design for brand-new trainees, whose progression is likely:
+#    1) run script as intended, inspect typical output
+#    2) run script with intentionally bad arguments, and interpret error messages
+#    3) read beginning at "START: body of script"
+#    4) read beginning at "START: define constants"
+#    5) read beginning at "START: define functions"
+#    6) edit body of script
+#    7) edit existing function definitions
+#    8) write new internal functions
+#    9) edit invocation
+# - make sure edits are reflected in fxnSelftestBasic()
+# - test with fxnSelftestBasic() after editing
+# 
+########### !!!!!!! FORTEMPLATE-ONLY: REMOVE FROM CHILD SCRIPTS !!!!!!! ###########
 
 
 
 # ------------------------- START: define functions ------------------------- #
 
+# internal functions, defined in any order regarless of interdependencies since they're not interpreted until called from the body of the script:
+
 fxnPrintUsage() {
-   #EDITME: customize for each script:
+   # EDITME: customize for each script:
    echo >&2 "$0 - a script to do something"
    echo >&2 "Usage: scriptname [-r|-n] -v file {file2 ...}"
    echo >&2 "  -r   print data rows only (no column names)"
    echo >&2 "  -n   pring column names ONLY (no data rows)"
    echo >&2 "  -v   be verbose"
+}
+
+
+fxnSelftestBasic() {
+   # Tests the basic funcions and variables of the template on which this
+   # script is based. Valid output appears as comment text at the bottom
+   # of this script. This can be used to confirm that the basic functions
+   # of the script are working on a particular system, or that they haven't
+   # been broken by recent edits.
+}
+
+
+fxnSelftestFull() {
+  # Tests the full function of the script. Begins by calling fxnSelftestBaic() , and then...
+  # <EDITME: description of tests and validating data>
+  fxnSelftestBasic()
 }
 
 
@@ -96,8 +148,8 @@ fxnCalc() {
 }
 
 
-fxnValidateInputImages() {
-   invalidInputList=""
+fxnValidateImages() {
+   invalidInputList=''
    for image in $@; do
       # is file a readable image?
       3dinfo $image &>/dev/null
@@ -120,6 +172,12 @@ fxnValidateInputImages() {
 
 # ------------------------- START: define constants ------------------------- #
 
+# Note that the order of these definitions is important when one variable is to contain the value of another, e.g., 
+#     nameFirst = Stephen
+#     nameFamily = Towler
+#     nameFull = "${nameFirst} ${nameFamily}"    # this line must follow the lines where $nameFirst and $nameFamily are defined
+
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 1) anything related to command-line arguments:
 #
@@ -130,6 +188,7 @@ fxnValidateInputImages() {
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 # 2)  basic system resources:
 #
+
 scriptName=`basename $0`		# ...assign a constant here if not calling from a script
 scriptPID="$$"				# ...assign a constant here if not calling from a script
 #scriptDir=""				# ...used to get to other scripts in same directory
@@ -140,11 +199,14 @@ startDateTime=`date +%Y%m%d%H%M%S`	# ...used in file and dir names
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-# 3) app-specific shenanigans:
-#
-# e.g., variables for file locations, filenames, long arguments, etc.
-#
+# 3) variables specific to the goals of this script:
+#    (e.g., variables for file locations, filenames, long arguments, etc.)
+# 
 
+# Below are examples and some common variables I like to define, but deactivated for this script by the COMMENTBLOCK lines surrounding them. 
+# To use any of these, past them above first COMMENTBLOCK line and edit for your use.
+# (Every line between the two COMMENTBLOCK lines is ignored by this script:)
+#
 : <<'COMMENTBLOCK'
    intensity="t1bfc0"			         # ...to be used in file and folder names
    orientation="radOrig"			      # ...ditto
@@ -271,11 +333,13 @@ echo ""
 # ------------------------- FINISHED: greet user/logs------------------------- #
 
 
-# ------------------------- START: body of program ------------------------- #
+# ------------------------- START: body of script ------------------------- #
 
+# consider staring the script with one of these internal functions:
+# fxnSelftestBasic
+# fxnSelftestFull
 # fxnSetTempDir                 # setup and create $tempDir if necessary
-# fxnValidateInputImages $@     # verify that all input images are actually images
-# TBD: Verify that destination directories exist and are user-writable:
+# fxnValidateImages $@     # verify that all input images are actually images
 
 echo ""
 echo ""
@@ -321,12 +385,15 @@ echo "================================================================="
 echo ""
 echo ""
 
-# ------------------------- FINISHED: body of program ------------------------- #
+# ------------------------- FINISHED: body of script ------------------------- #
 
 
 # ------------------------- START: restore environment and say bye to user/logs ------------------------- #
 
+# Did we create a temporary directory that we don't need to keep, either because the contents are garbag or because we already copied out the contents we care about?
 # rm -fr ${tempDir}
+
+# Did we change any environmental variables? It would be polite to set them to their original values:
 # export FSLOUTPUTTYPE=${FSLOUTPUTTYPEorig}
 
 echo ""
