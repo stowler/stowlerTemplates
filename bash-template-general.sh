@@ -3,21 +3,21 @@
 # LOCATION:	<location including filename>
 # USAGE:	see fxnPrintUsage() function below 
 #
-# CREATED:        <date> by stowler@gmail.com
+# CREATED:	<date> by stowler@gmail.com
 # LAST UPDATED:	<date> by stowler@gmail.com
 #
 # DESCRIPTION:
-# <description of what the script does>
+# <EDITME: description of what the script does>
 # 
 # SYSTEM REQUIREMENTS:
 #  - awk must be installed for fxnCalc
-#   <list or describe others>
+#   <EDITME: list or describe others>
 #
 # INPUT FILES AND PERMISSIONS FOR OUTPUT:
-# <list or describe>
+# <EDITME: list or describe>
 #
 # OTHER ASSUMPTIONS:
-# <list or describe>
+# <EDITME: list or describe>
 #
 # READING AND CODING NOTES:
 # 
@@ -29,21 +29,72 @@
 # ------------------------- START: body of script ------------------------- #
 # ------------------------- START: restore environment and say bye to user/logs ------------------------- #
 #
-# Search for "EDITME" to find areas that may need to be edited on a per-system/per-experiment/per-whatever basis.
+# Search for "EDITME" to find areas that may need to be edited on a
+# per-system/per-experiment/per-whatever basis.
+#
 # Search for "TBD" to find areas where I have work to do, decisions to make, etc. TBD.
 #
-########### !!!!!!! FOR TEMPLATE ONLY. REMOVE FROM CHILD SCRIPTS: !!!!!!! ###########
+# Search for "DEBUG" go find areas that I only intend to execute duing debugging.
+#
+#
+########### !!!!!!! EDITME FOR TEMPLATE ONLY. REMOVE FROM CHILD SCRIPTS: !!!!!!! ###########
 # A meta note for editing this template :
 #
-# Location: 
+# LOCATION: 
 # https://github.com/stowler/stowlerTemplates/edit/master/bash-template-general.sh
+#
+# USAGE:
+# bash-template-general.sh (no arguments)
+# (this executes fxnSelftestBasic)
+#
+# ...but really this is a template from which to build other scripts:
+#
+# SIMPLE USE
+# (no command-line arguments, no output to filesystem):
+# 1) Make a copy of this template script.
+# 2) Paste a list of commands into the script body. 
+#    (search for "START: body of script". Paste after that.)
+# 3) execute the script to run your list of commands
+# 4) contemplate the ephemera of the output as it appears in your terminal
+#
+# INTERMEDIATE USE
+# (no command-line arguments, but output something to ${tempDir} in the filesystem):
+# 1) Make a copy of this template script.
+# 2) Uncomment the line in the script body that calls fxnSetTempDir. This
+#    creates the variable ${tempDir} and then tries to create a new ${tempDir}
+#    directory in the filesystem. This will be the temporary directory to which
+#    you will send your output files from this script. 
+# 2) Paste a list of commands into the script body after calling fxnSetTempDir.
+#    This could be pretty much anything, but be sure any output files get
+#    routed to ${tempDir}. Like such:
+#
+#	ls -al ~ > ${tempDir}/aListOfStuffInYourHomeDirectory.txt
+#	echo "Um. That's everything as of `date`" >> ${tempDir}/aListOfStuffInYourHomeDirectory.txt
+#	cat ${tempDir}/aListOfStuffInYourHomeDirectory.txt
+#	echo ""
+#	echo "Scroll up to see a listing of the stuff in your home directory"
+#	echo "as it was recorded in the recently created text file"
+#	echo "called ${tempDir}/stuffInMyHomeDirectory.txt"
+#	echo ""
+#
+# 3) Execute the script to run your list of commands.
+# 4) Enjoy the ephemera appearing in the terminal window while you anticipate
+#    what awaits you in ${tempDir} upon script completion. 
+# 5) Open a new terminal window and cd to the folder that was created as
+#    ${tempDir}. Noticing, of course, that you can't just type "cd ${tempDir}"
+#    since the variable ${tempDir} wasn't exported from the script.  Once in
+#    ${tempDir} issue "pwd" to confirm your location and then issue "ls" to marvel
+#    at the bounty of files you have created.
+# 6) Do what you like with your creations and then manually delete ${tempDir}.
+
 #
 # Design:
 # - avoid references to external files  
 # - include just enough internal functions so that reasonable child scripts can stand on their own.
 #
 # Minding pedagogy: 
-# - Don't over-functionalize the template. It provides babysteps for trainees who don't yet understand internal functions:
+# - Don't over-functionalize the template. It provides babysteps for trainees
+#   who don't yet understand internal functions:
 #    - banners: they're a good place for a brand-new trainee to make superficial edits and see how output is affected
 #    - define constants section: trainees will learn to edit variables there even before they understand functions
 #    - invocation and restoration sections: trainees will learn to create functions from these
@@ -60,13 +111,15 @@
 # - make sure edits are reflected in fxnSelftestBasic()
 # - test with fxnSelftestBasic() after editing
 # 
-########### !!!!!!! FORTEMPLATE-ONLY: REMOVE FROM CHILD SCRIPTS !!!!!!! ###########
+########### !!!!!!! EDITME FOR TEMPLATE-ONLY: REMOVE FROM CHILD SCRIPTS !!!!!!! ###########
 
 
 
 # ------------------------- START: define functions ------------------------- #
 
-# internal functions, defined in any order regarless of interdependencies since they're not interpreted until called from the body of the script:
+# These are internal functions, defined in any order regardless of
+# interdependencies since they're not interpreted until called from the body of
+# the script:
 
 fxnPrintUsage() {
    # EDITME: customize for each script:
@@ -84,6 +137,15 @@ fxnSelftestBasic() {
    # of this script. This can be used to confirm that the basic functions
    # of the script are working on a particular system, or that they haven't
    # been broken by recent edits.
+}
+
+
+fxnCalc() {
+   # fxnCalc is also something I include in my .bash_profile:
+   # e.g., calc(){ awk "BEGIN{ print $* }" ;}
+   # use quotes if parens are included in the function call:
+   # e.g., calc "((3+(2^3)) * 34^2 / 9)-75.89"
+   awk "BEGIN{ print $* }" ;
 }
 
 
@@ -139,15 +201,6 @@ fxnSetTempDir(){
 }
 
 
-fxnCalc() {
-   # fxnCalc is also something I include in my .bash_profile:
-   # e.g., calc(){ awk "BEGIN{ print $* }" ;}
-   # use quotes if parens are included in the function call:
-   # e.g., calc "((3+(2^3)) * 34^2 / 9)-75.89"
-   awk "BEGIN{ print $* }" ;
-}
-
-
 fxnValidateImages() {
    invalidInputList=''
    for image in $@; do
@@ -167,15 +220,79 @@ fxnValidateImages() {
    fi
 }
 
+fxnSetSomeBasicConstants() {
+	# Create some constants to make basic system information convenient for
+	# the script. These are technically variables but we are calling them
+	# constants because their values don't change during the script.
+	#
+	# Here we set the value of each variable, but only if it doesn't
+	# already have a value. For example: before the nominal script body I
+	# assign a value to ${scriptName} so that it can appear in a welcome
+	# banner, even before the call to this function. We wouldn't want to
+	# overwrite the value of ${scriptName} here if it had been set to
+	# something specific in the script body.
+	# 
+	# Performed via the if/the/else statements below for each constant:
+	#
+	# if the variable is empty: 
+	# 	assign a value to the variable AND
+	# 	add its name to the list of constants
+	# else it's not empty:
+	# 	it already has a value so just add its name to the list
+	# 
+	listOfBasicConstants=''	
+
+	if [ -z "${scriptName}" ]; then
+		scriptName="`basename $0`"
+		listOfBasicConstants="scriptName ${listOfBasicConstants}"
+	else
+		listOfBasicConstants="scriptName ${listOfBasicConstants}"
+ 	fi
+
+	if [ -z "${scriptPID}" ]; then
+		scriptPID="$$"
+		listOfBasicConstants="scriptPID ${listOfBasicConstants}"
+	else
+		listOfBasicConstants="scriptPID ${listOfBasicConstants}"
+	fi
+
+	if [ -z "${scriptUser}" ]; then
+		scriptUser="`whoami`"
+		listOfBasicConstants="scriptUser ${listOfBasicConstants}"
+	else
+		listOfBasicConstants="scriptUser ${listOfBasicConstants}"
+	fi
+	if [ -z "${startDate}" ]; then
+		startDate="`date +%Y%m%d`"
+		listOfBasicConstants="startDate ${listOfBasicConstants}"
+	else
+		listOfBasicConstants="startDate ${listOfBasicConstants}"
+	fi
+	if [ -z "${startDateTime}" ]; then
+		startDateTime="`date +%Y%m%d%H%M%S`"
+		listOfBasicConstants="startDateTime ${listOfBasicConstants}"
+	else
+		listOfBasicConstants="startDatetime ${listOfBasicConstants}"
+	fi
+	
+	# and then list the variables we defined:
+	echo "DEBUG: \${listOfBasicConstants} is:"
+	echo "${listOfBasicConstants}"
+}
+
+fxnSetSomeFancyConstants() {
+
+}
 # ------------------------- FINISHED: define functions ------------------------- #
 
 
 # ------------------------- START: define constants ------------------------- #
 
-# Note that the order of these definitions is important when one variable is to contain the value of another, e.g., 
+# Note that the order of these definitions is important when one variable is to
+# contain the value of another. For example:
 #     nameFirst = Stephen
 #     nameFamily = Towler
-#     nameFull = "${nameFirst} ${nameFamily}"    # this line must follow the lines where $nameFirst and $nameFamily are defined
+#     nameFull = "${nameFirst} ${nameFamily}"    # <- this line must follow the lines where $nameFirst and $nameFamily are defined
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -183,19 +300,6 @@ fxnValidateImages() {
 #
 # e.g. firstArgumentValue="$1"
 #
-
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-# 2)  basic system resources:
-#
-
-scriptName=`basename $0`		# ...assign a constant here if not calling from a script
-scriptPID="$$"				# ...assign a constant here if not calling from a script
-#scriptDir=""				# ...used to get to other scripts in same directory
-scriptUser=`whoami`			# ...used in file and dir names
-startDate=`date +%Y%m%d`		# ...used in file and dir names
-startDateTime=`date +%Y%m%d%H%M%S`	# ...used in file and dir names
-#cdMountPoint
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
@@ -267,9 +371,9 @@ COMMENTBLOCK
 
 
 # always: check for number of arguments, even if expecting zero:
-if [ $# -lt 1 ] ; then
+if [ $# -ne 0 ] ; then
    echo ""
-   echo "ERROR: no files specified"
+   echo "ERROR: this script isn't expecting any arguments."
    echo ""
    fxnPrintUsage
    echo ""
@@ -322,6 +426,10 @@ COMMENTBLOCK
 
 
 # ------------------------- START: greet user/logs ------------------------- #
+
+# First get the script name for printing in the banner below:
+if [ -z "${scriptName}" ]; do scriptName="`basename ${0}`"; done fi 
+# ...then print banner:
 echo ""
 echo ""
 echo "#################################################################"
@@ -335,63 +443,74 @@ echo ""
 
 # ------------------------- START: body of script ------------------------- #
 
-# consider staring the script with one of these internal functions:
+# EDITME: by default this template isn't expecting to receive arguments on the
+# commandline or automatically write anything to the filesystem. You could just
+# paste your list of commands here, save the script, and run it to execute your
+# commands in sequence. Past away:
+
+# It helps to have some consistently defined system constants:
+
+# ...or consider staring the script with one of these internal functions:
+#
+# 	Need a place to put output files? Just uncomment these lines:
+# 	fxnSetTempDir                 # <- use internal function to create ${tempDir}
+# 	removeTempDirAtEndOfScript=1  # <- set to 1 (==delete) or 0 . See end of script.
+
 # fxnSelftestBasic
 # fxnSelftestFull
-# fxnSetTempDir                 # setup and create $tempDir if necessary
 # fxnValidateImages $@     # verify that all input images are actually images
 
+
+# For long processes that get called from this script, the user (or log reviwer) might
+# like to have some context. Uncomment out this block of banners and place your call
+# to someProgramThatJustTakesForever.sh inside of them:
+: <<'COMMENTBLOCK'
 echo ""
 echo ""
 echo "================================================================="
-echo "START: do some stuff"
-echo "(should take about TBD minutes)"
+echo "START: do some stuff EDITME"
+echo "(should take about EDITME minutes)"
       date
 echo "================================================================="
 echo ""
 echo ""
 
-# stuff stuff stuff
+echo "(EDITME) If this line weren't just a placeholder in the template I'd be executing some useful commmands here."
 
 echo ""
 echo ""
 echo "================================================================="
-echo "FINISHED: did some stuff "
+echo "FINISHED: did some stuff EDITME "
       date
 echo "================================================================="
 echo ""
 echo ""
+COMMENTBLOCK
 
-
-
-echo ""
-echo ""
-echo "================================================================="
-echo "START: do some other stuff"
-echo "(should take about TBD minutes)"
-      date
-echo "================================================================="
-echo ""
-echo ""
-
-# other stuff stuff stuff
-
-echo ""
-echo ""
-echo "================================================================="
-echo "FINISHED: did some other stuff "
-      date
-echo "================================================================="
-echo ""
-echo ""
 
 # ------------------------- FINISHED: body of script ------------------------- #
 
 
 # ------------------------- START: restore environment and say bye to user/logs ------------------------- #
 
-# Did we create a temporary directory that we don't need to keep, either because the contents are garbag or because we already copied out the contents we care about?
-# rm -fr ${tempDir}
+# Output some final status info to the user and clean-up any resources.
+
+# About the temporary directory, if it was defined:
+if [ -n ${tempDir} ]; do
+	echo ""
+	echo ""
+	echo "(NB: temporary directory was ${tempDir})"
+	echo ""
+	echo ""
+done
+# ...
+if [ ${removeTempDirAtEndOfScript} = "1" ]; do
+
+done
+
+
+	# we care about? If so, let's clean-up:
+	# rm -fr ${tempDir} && echo "temporary directory ${tempDir} has been removed.
 
 # Did we change any environmental variables? It would be polite to set them to their original values:
 # export FSLOUTPUTTYPE=${FSLOUTPUTTYPEorig}
