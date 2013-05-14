@@ -3,8 +3,8 @@
 # LOCATION:	<location including filename>
 # USAGE:	(see fxnPrintUsage() function below)
 #
-# CREATED:      <date> by <whom>
-# LAST UPDATED:	<date> by <whom>
+# CREATED:      <date> by stowler@gmail.com
+# LAST UPDATED:	<date> by stowler@gmail.com
 #
 # DESCRIPTION:
 # <description of what the script does>
@@ -43,28 +43,33 @@ fxnPrintUsage() {
 
 
 fxnSetTempDir(){
-   # ${tempParent}: parent dir of ${tempDir}(s) where temp files will be stored
-   # e.g. tempParent="${blindParent}/tempProcessing"
-   # (If tempParent or tempDir needs to include blind, remember to assign value to $blind before calling!)
-   # EDITME: $tempParent is something that might change on a per-system, per-script, or per-experiment basis:
+   # Create a temporary directory ${tempDir} , as a child of ${tempParent}, which is set prior to calling this fxn.
+   #
+   # NB: ${tempParent} might need to change on a per-system, per-script, or per-experiment, basis
+   #    If tempParent or tempDir needs to include identifying information from the script,
+   #    remember to assign values before calling fxnSetTempDir!)
+   #    e.g., tempParent=${participantDirectory}/manyTempProcessingDirsForThisParticipant && fxnSetTempDir()
    hostname=`hostname -s`
    kernel=`uname -s`
-   if [ $hostname = "stowler-mbp" ]; then
+   if [ $hostname = "stowler-mba" ]; then
       tempParent="/Users/stowler/temp"
    elif [ $kernel = "Linux" ] && [ -d /tmp ] && [ -w /tmp ]; then
       tempParent="/tmp"
    elif [ $kernel = "Darwin" ] && [ -d /tmp ] && [ -w /tmp ]; then
       tempParent="/tmp"
    else
-      echo "Cannot find a suitable temp directory. Edit script's tempParent variable. Exiting."
+      echo "Cannot find a suitable parent in which to create a temporary directory. Edit script's $tempParent variable. Exiting."
       exit 1
    fi
-   # e.g. tempDir="${tempParent}/${startDateTime}-from_${scriptName}.${scriptPID}"
+   # e.g., tempDir="${tempParent}/${startDateTime}-from_${scriptName}.${scriptPID}"
    tempDir="${tempParent}/${startDateTime}-from_${scriptName}.${scriptPID}"
    mkdir $tempDir
    if [ $? -ne 0 ] ; then
       echo ""
-      echo "ERROR: unable to create temporary directory $tempDir"
+      echo "ERROR: unable to create temporary directory ${tempDir}."
+      echo 'You may want to confirm the location and permissions of ${tempParent}, which is understood as:'
+      echo "${tempParent}"
+      echo ""
       echo "Exiting."
       echo ""
       exit 1
@@ -248,7 +253,7 @@ COMMENTBLOCK
 echo ""
 echo ""
 echo "#################################################################"
-echo "START: \"${scriptName} ${1}\""
+echo "START: \"${scriptName}\""
       date
 echo "#################################################################"
 echo ""
@@ -317,7 +322,7 @@ echo ""
 echo ""
 echo ""
 echo "#################################################################"
-echo "FINISHED: \"${scriptName} ${1}\""
+echo "FINISHED: \"${scriptName}\""
       date
 echo "#################################################################"
 echo ""
