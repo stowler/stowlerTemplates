@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # LOCATION:	<location including filename>
-# USAGE:	see fxnPrintUsage() function below 
+# USAGE:	see the fxnPrintUsage() function below 
 #
 # CREATED:	<date> by stowler@gmail.com
 # LAST UPDATED:	<date> by stowler@gmail.com
@@ -49,7 +49,7 @@
 #
 # ...but really this is a template from which to build other scripts:
 #
-# SIMPLE USE
+# SIMPLE USE:
 # (no command-line arguments, no output to filesystem):
 # 1) Make a copy of this template script.
 # 2) Paste a list of commands into the script body. 
@@ -57,7 +57,7 @@
 # 3) execute the script to run your list of commands
 # 4) contemplate the ephemera of the output as it appears in your terminal
 #
-# INTERMEDIATE USE
+# INTERMEDIATE USE:
 # (no command-line arguments, but output something to ${tempDir} in the filesystem):
 # 1) Make a copy of this template script.
 # 2) Uncomment the line in the script body that calls fxnSetTempDir. This
@@ -86,7 +86,8 @@
 #    ${tempDir} issue "pwd" to confirm your location and then issue "ls" to marvel
 #    at the bounty of files you have created.
 # 6) Do what you like with your creations and then manually delete ${tempDir}.
-
+#
+# TBD: ADVANCED USE:
 #
 # Design:
 # - avoid references to external files  
@@ -117,9 +118,9 @@
 
 # ------------------------- START: define functions ------------------------- #
 
-# These are internal functions, defined in any order regardless of
-# interdependencies since they're not interpreted until called from the body of
-# the script:
+# The following are internal functions for this script. They can be  defined in
+# any order regardless of interdependencies since each is not interpreted until
+# called from the body of the script:
 
 fxnPrintUsage() {
    # EDITME: customize for each script:
@@ -130,6 +131,60 @@ fxnPrintUsage() {
    echo >&2 "  -v   be verbose"
 }
 
+fxnProcessInvocation() {
+
+# always: check for number of arguments, even if expecting zero:
+if [ $# -ne 0 ] ; then
+   echo ""
+   echo "ERROR: this script isn't expecting any arguments."
+   echo ""
+   fxnPrintUsage
+   echo ""
+   exit 1
+fi
+
+
+# when needed, process commandline arguments with getopt by removing
+# COMMENTBLOCK wrapper and editing:
+
+: <<'COMMENTBLOCK'
+# STEP 1/3: initialize any variables that receive values during argument processing:
+headingsoff=0
+headingsonly=0
+# STEP 2/3: set the getopt string:
+set -- `getopt rn: "$@"`
+# STEP 3/3: process command line switches in  a loop:
+[ $# -lt 1 ] && exit 1	# getopt failed
+while [ $# -gt 0 ]
+do
+    case "$1" in
+      -r)   headingsoff=1
+            ;;
+      -n)	headingsonly=1
+            ;;
+      --)	shift; break
+            ;;
+      -*)
+            echo >&2 "usage: $0 [-r for data row only or -n for column names only] image ..."
+             exit 1
+             ;;
+       *)	break
+            ;;		# terminate while loop
+    esac
+    shift
+done
+# now all command line switches have been processed, and "$@" contains all file names
+# check for incompatible invocation options:
+if [ "$headingsoff" != "0" ] && [ "$headingsonly" != "0" ] ; then
+   echo ""
+   echo "ERROR: cannot specify both -r and -n:"
+   echo ""
+   fxnPrintUsage
+   echo ""
+   exit 1
+fi
+COMMENTBLOCK
+}
 
 fxnSelftestBasic() {
    # Tests the basic funcions and variables of the template on which this
@@ -140,19 +195,19 @@ fxnSelftestBasic() {
 }
 
 
+fxnSelftestFull() {
+  # Tests the full function of the script. Begins by calling fxnSelftestBaic() , and then...
+  # <EDITME: description of tests and validating data>
+  fxnSelftestBasic()
+}
+
+
 fxnCalc() {
    # fxnCalc is also something I include in my .bash_profile:
    # e.g., calc(){ awk "BEGIN{ print $* }" ;}
    # use quotes if parens are included in the function call:
    # e.g., calc "((3+(2^3)) * 34^2 / 9)-75.89"
    awk "BEGIN{ print $* }" ;
-}
-
-
-fxnSelftestFull() {
-  # Tests the full function of the script. Begins by calling fxnSelftestBaic() , and then...
-  # <EDITME: description of tests and validating data>
-  fxnSelftestBasic()
 }
 
 
@@ -180,7 +235,8 @@ fxnSetTempDir(){
    elif [ $kernel = "Darwin" ] && [ -d /tmp ] && [ -w /tmp ]; then
       tempParent="/tmp"
    else
-      echo "fxnSetTempDir cannot find a suitable parent directory in which to create a new temporary directory. Edit script's $tempParent variable. Exiting."
+      echo "fxnSetTempDir cannot find a suitable parent directory in which to \
+	    create a new temporary directory. Edit script's $tempParent variable. Exiting."
       exit 1
    fi
 
@@ -281,146 +337,89 @@ fxnSetSomeBasicConstants() {
 }
 
 fxnSetSomeFancyConstants() {
+	# Note that the order of these definitions is important when one variable is to
+	# contain the value of another. For example:
+	#     nameFirst = Stephen
+	#     nameFamily = Towler
+	#     nameFull = "${nameFirst} ${nameFamily}"    # <- this line must follow the lines where $nameFirst and $nameFamily are defined
 
+
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	# 1) anything related to command-line arguments:
+	#
+	# e.g. firstArgumentValue="$1"
+	#
+
+
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+	# 3) variables specific to the goals of this script:
+	#    (e.g., variables for file locations, filenames, long arguments, etc.)
+	# 
+
+	# Below are examples and some common variables I like to define, but deactivated for this script by the COMMENTBLOCK lines surrounding them. 
+	# To use any of these, past them above first COMMENTBLOCK line and edit for your use.
+	# (Every line between the two COMMENTBLOCK lines is ignored by this script:)
+	#
+	: <<'COMMENTBLOCK'
+	   intensity="t1bfc0"			         # ...to be used in file and folder names
+	   orientation="radOrig"			      # ...ditto
+
+	   # set image directories:
+
+	   # ${blindParent}:
+	   # parent dir where each subject's $blindDir reside (e.g. parent of blind1, blind2, etc.)
+	   # e.g., blindParent="/home/leonardlab/images/ucr"
+	   # e.g., allows mkdir ${blindParent}/importedSemiautoLatvens ${blindParent}/blind1
+
+	   # ${blindDir}: 
+	   # dir for each subject's images and image directories:
+	   # e.g., blindDir="/home/leonardlab/images/ucr/${blind}"
+	   # e.g., blindDir="${blindParent}/${blind}"
+
+	   # ${origDir}: 
+	   # dir or parent dir where original images will be stored (or are already stored if formatted)
+	   # e.g., origDir="${blindDir}/acqVolumes"
+
+	   # ${anatRoot}}:
+	   # where the groomed images directory, among others, will live:
+	   # e.g., anatRoot="${blindDir}/anat-${intensity}-${orientation}"
+
+	   # ...source directories for input images:
+	   # (script should copy images from these [probably poorly organized] source directories
+	   # to $origDir
+	   # e.g., sourceT1acqDir="/Users/Shared/cepRedux/acqVolumes"
+	   # e.g., sourceLatvenDir="/Users/Shared/cepRedux/semiautoLatvens"
+	   # e.g., sourceBrainDir="/Users/Shared/cepRedux/semiautoExtractedBrains"
+	   # e.g., sourceFlairDir="/Users/Shared/libon-final/origOrientImageJ" 
+	   # e.g., sourceWMHImaskDir="/Users/Shared/libon-final/masksOrientImageJ"  
+
+	   # ...brainsuite09 paths and definitions:
+	   #BSTPATH="/data/pricelab/scripts/sdt/brainsuite09/brainsuite09.x86_64-redhat-linux-gnu"
+	   #BSTPATH="/Users/stowler/Downloads/brainsuite09.i386-apple-darwin9.0"
+	   #export BSTPATH
+	   #bstBin="${BSTPATH}/bin/"
+	   #export bstBin
+	   #ATLAS="${BSTPATH}/atlas/brainsuite.icbm452.lpi.v08a.img"
+	   #export ATLAS
+	   #ATLASLABELS="${BSTPATH}/atlas/brainsuite.icbm452.lpi.v09e3.label.img"
+	   #export ATLASLABELS
+	   #ATLASES="--atlas ${ATLAS} --atlaslabels ${ATLASLABELS}"
+	   #export ATLASES
+
+	   # ...FSL variables
+	   # FSLDIR=""
+	   # export FSLDIR
+	   # FSLOUTPUTTYPEorig="${FSLOUTPUTTYPE}"
+	   # export FSLOUTPUTTYPE=NIFTI_GZ
+COMMENTBLOCK
 }
+
 # ------------------------- FINISHED: define functions ------------------------- #
 
-
-# ------------------------- START: define constants ------------------------- #
-
-# Note that the order of these definitions is important when one variable is to
-# contain the value of another. For example:
-#     nameFirst = Stephen
-#     nameFamily = Towler
-#     nameFull = "${nameFirst} ${nameFamily}"    # <- this line must follow the lines where $nameFirst and $nameFamily are defined
-
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 1) anything related to command-line arguments:
-#
-# e.g. firstArgumentValue="$1"
-#
-
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-# 3) variables specific to the goals of this script:
-#    (e.g., variables for file locations, filenames, long arguments, etc.)
-# 
-
-# Below are examples and some common variables I like to define, but deactivated for this script by the COMMENTBLOCK lines surrounding them. 
-# To use any of these, past them above first COMMENTBLOCK line and edit for your use.
-# (Every line between the two COMMENTBLOCK lines is ignored by this script:)
-#
-: <<'COMMENTBLOCK'
-   intensity="t1bfc0"			         # ...to be used in file and folder names
-   orientation="radOrig"			      # ...ditto
-
-   # set image directories:
-
-   # ${blindParent}:
-   # parent dir where each subject's $blindDir reside (e.g. parent of blind1, blind2, etc.)
-   # e.g., blindParent="/home/leonardlab/images/ucr"
-   # e.g., allows mkdir ${blindParent}/importedSemiautoLatvens ${blindParent}/blind1
-
-   # ${blindDir}: 
-   # dir for each subject's images and image directories:
-   # e.g., blindDir="/home/leonardlab/images/ucr/${blind}"
-   # e.g., blindDir="${blindParent}/${blind}"
-
-   # ${origDir}: 
-   # dir or parent dir where original images will be stored (or are already stored if formatted)
-   # e.g., origDir="${blindDir}/acqVolumes"
-
-   # ${anatRoot}}:
-   # where the groomed images directory, among others, will live:
-   # e.g., anatRoot="${blindDir}/anat-${intensity}-${orientation}"
-
-   # ...source directories for input images:
-   # (script should copy images from these [probably poorly organized] source directories
-   # to $origDir
-   # e.g., sourceT1acqDir="/Users/Shared/cepRedux/acqVolumes"
-   # e.g., sourceLatvenDir="/Users/Shared/cepRedux/semiautoLatvens"
-   # e.g., sourceBrainDir="/Users/Shared/cepRedux/semiautoExtractedBrains"
-   # e.g., sourceFlairDir="/Users/Shared/libon-final/origOrientImageJ" 
-   # e.g., sourceWMHImaskDir="/Users/Shared/libon-final/masksOrientImageJ"  
-
-   # ...brainsuite09 paths and definitions:
-   #BSTPATH="/data/pricelab/scripts/sdt/brainsuite09/brainsuite09.x86_64-redhat-linux-gnu"
-   #BSTPATH="/Users/stowler/Downloads/brainsuite09.i386-apple-darwin9.0"
-   #export BSTPATH
-   #bstBin="${BSTPATH}/bin/"
-   #export bstBin
-   #ATLAS="${BSTPATH}/atlas/brainsuite.icbm452.lpi.v08a.img"
-   #export ATLAS
-   #ATLASLABELS="${BSTPATH}/atlas/brainsuite.icbm452.lpi.v09e3.label.img"
-   #export ATLASLABELS
-   #ATLASES="--atlas ${ATLAS} --atlaslabels ${ATLASLABELS}"
-   #export ATLASES
-
-   # ...FSL variables
-   # FSLDIR=""
-   # export FSLDIR
-   # FSLOUTPUTTYPEorig="${FSLOUTPUTTYPE}"
-   # export FSLOUTPUTTYPE=NIFTI_GZ
-COMMENTBLOCK
-
-# ------------------------- FINISHED: define constants ------------------------- #
 
 
 # ------------------------- START: process the invocation ------------------------- #
 
-
-# always: check for number of arguments, even if expecting zero:
-if [ $# -ne 0 ] ; then
-   echo ""
-   echo "ERROR: this script isn't expecting any arguments."
-   echo ""
-   fxnPrintUsage
-   echo ""
-   exit 1
-fi
-
-
-# when needed, process commandline arguments with getopt by removing
-# COMMENTBLOCK wrapper and editing:
-
-: <<'COMMENTBLOCK'
-# STEP 1/3: initialize any variables that receive values during argument processing:
-headingsoff=0
-headingsonly=0
-# STEP 2/3: set the getopt string:
-set -- `getopt rn: "$@"`
-# STEP 3/3: process command line switches in  a loop:
-[ $# -lt 1 ] && exit 1	# getopt failed
-while [ $# -gt 0 ]
-do
-    case "$1" in
-      -r)   headingsoff=1
-            ;;
-      -n)	headingsonly=1
-            ;;
-      --)	shift; break
-            ;;
-      -*)
-            echo >&2 "usage: $0 [-r for data row only or -n for column names only] image ..."
-             exit 1
-             ;;
-       *)	break
-            ;;		# terminate while loop
-    esac
-    shift
-done
-# now all command line switches have been processed, and "$@" contains all file names
-# check for incompatible invocation options:
-if [ "$headingsoff" != "0" ] && [ "$headingsonly" != "0" ] ; then
-   echo ""
-   echo "ERROR: cannot specify both -r and -n:"
-   echo ""
-   fxnPrintUsage
-   echo ""
-   exit 1
-fi
-COMMENTBLOCK
 
 # ------------------------- FINISHED: process the invocation ------------------------- #
 
@@ -443,15 +442,26 @@ echo ""
 
 # ------------------------- START: body of script ------------------------- #
 
-# EDITME: by default this template isn't expecting to receive arguments on the
-# commandline or automatically write anything to the filesystem. You could just
-# paste your list of commands here, save the script, and run it to execute your
-# commands in sequence. Past away:
+# ...or, to be fancier, you could uncomment the following line to process
+# command-line arguments using the script's internal function:
+# fxnProcessInvocation()
 
-# It helps to have some consistently defined system constants:
+# EDITME: To keep things simple, you can just paste your list of bash
+# commands below this comment, save the script, and run it. This would work
+# because by default this template isn't expecting to receive arguments on the
+# commandline or automatically write anything to the filesystem. If that's what
+# you need right now, paste away:
 
-# ...or consider staring the script with one of these internal functions:
-#
+
+# ...or, to be fancier, you could first call one or more of this template's
+# internal functions, designed to make your scripting easier:
+
+# 1) It helps to have some variables that contain system information
+#    ($scriptName, $startDateTime, etc.). To define a basic set of these constants,
+#    just uncomment this line, which will call this template's internal function:
+# fxnSetSomeBasicConstants
+
+# 2) 
 # 	Need a place to put output files? Just uncomment these lines:
 # 	fxnSetTempDir                 # <- use internal function to create ${tempDir}
 # 	removeTempDirAtEndOfScript=1  # <- set to 1 (==delete) or 0 . See end of script.
