@@ -29,101 +29,101 @@
 # ------------------------- START: body of script ------------------------- #
 # ------------------------- START: restore environment and say bye to user/logs ------------------------- #
 #
-# Search for "EDITME" to find areas that may need to be edited on a
-# per-system/per-experiment/per-whatever basis.
-#
-# Search for "TBD" to find areas where I have work to do, decisions to make, etc. TBD.
-#
-# Search for "DEBUG" to find areas that I only intend to execute duing debugging.
+# Searchable keywords that mark areas of code:
+# EDITME :  areas that should be edited on a per-system/script/experiment/whatever basis
+# TBD :     areas where I have work to do, decisions to make, etc.
+# DEBUG :   areas that I only intend to uncomment and execute duing debugging
 #
 # Lines starting with "###" (three hash marks) are marked as training material
 # so they can be stripped out automatically
 #
 #
-# #########!!!!!!! EDITME FOR TEMPLATE ONLY. REMOVE FROM CHILD SCRIPTS: !!!!!!! ###########
-# A meta note for editing this template :
-#
-# LOCATION: 
-# https://github.com/stowler/stowlerTemplates/edit/master/bash-template-general.sh
-#
-# USAGE:
-# bash-template-general.sh (no arguments)
-# (this executes fxnSelftestBasic)
-#
-# ...but really this is a template from which to build other scripts:
-#
-# SIMPLE USE:
-# (no command-line arguments, no output to filesystem):
-# 1) Make a copy of this template script.
-# 2) Paste a list of commands into the script body. 
-#    (search for "START: body of script". Paste after that.)
-# 3) execute the script to run your list of commands
-# 4) contemplate the ephemera of the output as it appears in your terminal
-#
-# INTERMEDIATE USE:
-# (no command-line arguments, but output something to ${tempDir} in the filesystem):
-# 1) Make a copy of this template script.
-# 2) Uncomment the line in the script body that calls fxnSetTempDir. This
-#    creates the variable ${tempDir} and then tries to create a new ${tempDir}
-#    directory in the filesystem. This will be the temporary directory to which
-#    you will send your output files from this script. 
-# 2) Paste a list of commands into the script body after calling fxnSetTempDir.
-#    This could be pretty much anything, but be sure any output files get
-#    routed to ${tempDir}. Like such:
-#
-#	ls -al ~ > ${tempDir}/aListOfStuffInYourHomeDirectory.txt
-#	echo "Um. That's everything as of `date`" >> ${tempDir}/aListOfStuffInYourHomeDirectory.txt
-#	cat ${tempDir}/aListOfStuffInYourHomeDirectory.txt
-#	echo ""
-#	echo "Scroll up to see a listing of the stuff in your home directory"
-#	echo "as it was recorded in the recently created text file"
-#	echo "called ${tempDir}/stuffInMyHomeDirectory.txt"
-#	echo ""
-#
-# 3) Execute the script to run your list of commands.
-# 4) Enjoy the ephemera appearing in the terminal window while you anticipate
-#    what awaits you in ${tempDir} upon script completion. 
-# 5) Open a new terminal window and cd to the folder that was created as
-#    ${tempDir}. Noticing, of course, that you can't just type "cd ${tempDir}"
-#    since the variable ${tempDir} wasn't exported from the script.  Once in
-#    ${tempDir} issue "pwd" to confirm your location and then issue "ls" to marvel
-#    at the bounty of files you have created.
-# 6) Do what you like with your creations and then manually delete ${tempDir}.
-#
-# TBD: ADVANCED USE:
-#
-# Design:
-# - avoid references to external files  
-# - include just enough internal functions so that reasonable child scripts can stand on their own.
-#
-# Minding pedagogy: 
-# - Don't over-functionalize the template. It provides babysteps for trainees
-#   who don't yet understand internal functions:
-#    - banners: they're a good place for a brand-new trainee to make superficial edits and see how output is affected
-#    - define constants section: trainees will learn to edit variables there even before they understand functions
-#    - invocation and restoration sections: trainees will learn to create functions from these
-# - Design for brand-new trainees, whose progression is likely:
-#    1) run script as intended, inspect typical output
-#    2) run script with intentionally bad arguments, and interpret error messages
-#    3) read beginning at "START: body of script"
-#    4) read beginning at "START: define constants"
-#    5) read beginning at "START: define functions"
-#    6) edit body of script
-#    7) edit existing function definitions
-#    8) write new internal functions
-#    9) edit invocation
-# - make sure edits are reflected in fxnSelftestBasic()
-# - test with fxnSelftestBasic() after editing
-# 
-# ########## !!!!!!! EDITME FOR TEMPLATE-ONLY: REMOVE FROM CHILD SCRIPTS !!!!!!! ###########
+### #########!!!!!!! FOR TEMPLATE ONLY. REMOVE FROM CHILD SCRIPTS (EDITME): !!!!!!! ###########
+### A meta note for editing this template :
+###
+### LOCATION: 
+### https://github.com/stowler/stowlerTemplates/edit/master/bash-template-general.sh
+###
+### USAGE:
+### bash-template-general.sh (no arguments)
+### (this executes fxnSelftestBasic if its call is uncommented in script body)
+###
+### ...but really this is a template from which to build other scripts:
+###
+### SIMPLE USE:
+### (no command-line arguments, no output to filesystem):
+### 1) Make a copy of this template script.
+### 2) Paste a list of commands into the script body. 
+###    (search for "START: body of script". Paste after that.)
+### 3) execute the script to run your list of commands
+### 4) contemplate the ephemera of the output as it appears in your terminal
+###
+### INTERMEDIATE USE:
+### (no command-line arguments, but output something to ${tempDir} in the filesystem):
+### 1) Make a copy of this template script.
+### 2) Uncomment the line in the script body that calls fxnSetTempDir. This
+###    creates the variable ${tempDir} and then tries to create a new ${tempDir}
+###    directory in the filesystem. This will be the temporary directory to which
+###    you will send your output files from this script. 
+### 2) Paste a list of commands into the script body after calling fxnSetTempDir.
+###    This could be pretty much anything, but be sure any output files get
+###    routed to ${tempDir}. Like such:
+###
+###	ls -al ~ > ${tempDir}/aListOfStuffInYourHomeDirectory.txt
+###	echo "Um. That's everything as of `date`" >> ${tempDir}/aListOfStuffInYourHomeDirectory.txt
+###	cat ${tempDir}/aListOfStuffInYourHomeDirectory.txt
+###	echo ""
+###	echo "Scroll up to see a listing of the stuff in your home directory"
+###	echo "as it was recorded in the recently created text file"
+###	echo "called ${tempDir}/stuffInMyHomeDirectory.txt"
+###	echo ""
+###
+### 3) Execute the script to run your list of commands.
+### 4) Enjoy the ephemera appearing in the terminal window while you anticipate
+###    what awaits you in ${tempDir} upon script completion. 
+### 5) Open a new terminal window and cd to the folder that was created as
+###    ${tempDir}. Noticing, of course, that you can't just type "cd ${tempDir}"
+###    since the variable ${tempDir} wasn't exported from the script.  Once in
+###    ${tempDir} issue "pwd" to confirm your location and then issue "ls" to marvel
+###    at the bounty of files you have created.
+### 6) Do what you like with your creations and then manually delete ${tempDir}.
+###
+### ADVANCED USE: (TBD)
+###
+### Design:
+### - avoid references to external files  
+### - include just enough internal functions so that reasonable child scripts can stand on their own.
+###
+### Minding pedagogy: 
+### - Don't over-functionalize the template. 
+###    - banners: they're a good place for a brand-new trainee to make
+###      superficial script body edits and see how output is affected
+###    - define constants section: trainees will learn to edit variables here in
+###      the script body before they work on functions
+###    - restoration section: trainees will learn to create functions from this
+###      block in the script body
+### - Design for brand-new trainees, whose progression is likely:
+###    1) run script as intended, inspect typical output
+###    2) run script with intentionally bad arguments, and interpret error messages
+###    3) read beginning at "START: body of script"
+###    4) read beginning at "START: define constants"
+###    5) read beginning at "START: define functions"
+###    6) edit body of script
+###    7) edit existing function definitions
+###    8) write new internal functions
+###    9) edit invocation
+### - make sure edits are reflected in fxnSelftestBasic()
+### - test with fxnSelftestBasic() after editing
+### 
+### ########## !!!!!!! FOR TEMPLATE-ONLY: REMOVE FROM CHILD SCRIPTS (EDITME) !!!!!!! ###########
 
 
 
 # ------------------------- START: define functions ------------------------- #
 
-# The following are internal functions for this script. They can be  defined in
-# any order regardless of interdependencies since each is not interpreted until
-# called from the body of the script:
+### The following are internal functions for this script. They can be  defined in
+### any order regardless of interdependencies since each is not interpreted until
+### called from the body of the script:
 
 
 fxnPrintUsage() {
@@ -215,9 +215,9 @@ fxnSelftestBasic() {
 
    # test internal function fxnSetTempDir:
    fxnSetTempDir
-   deleteTempDirAtEndOfScript=1
+   deleteTempDirAtEndOfScript=0
 
-   # Strip out all comments that are marked as teaching. This will create a
+   # Strip out all comments that are marked as training. This will create a
    # slimmer, more readable version of the script :
    trainingMarker='###'       # trainingMarker must be sed-friendly. See below:
    cp ${scriptDir}/${scriptName} ${tempDir}/script-orig.sh
@@ -248,13 +248,13 @@ fxnCalc() {
 
 
 fxnSetTempDir() {
-   # Attempt to create a temporary directory ${tempDir} .
-   # This will be a child of directory ${tempParent}, which maybe set prior to calling this fxn, 
-   # or will be set to something sensible by this function.
+   # Attempt to create a temporary directory ${tempDir} .  It will be a child
+   # of directory ${tempParent}, which may be set prior to calling this fxn, or
+   # will be set to something sensible by this function.
    #
    # NB: ${tempParent} might need to change on a per-system, per-script, or per-experiment, basis
    #    If tempParent or tempDir needs to include identifying information from the script,
-   #    remember to assign values before calling fxnSetTempDir!)
+   #    remember to assign values before calling fxnSetTempDir !
    #    e.g., tempParent=${participantDirectory}/manyTempProcessingDirsForThisParticipant && fxnSetTempDir()
 
    # Is $tempParent already defined as a writable directory? If not, try to define a reasonable one:
@@ -296,20 +296,20 @@ fxnSetTempDir() {
 
 
 fxnSetSomeFancyConstants() {
-	# Note that the order of these definitions is important when one variable is to
-	# contain the value of another. For example:
-	#     nameFirst = Stephen
-	#     nameFamily = Towler
-	#     nameFull = "${nameFirst} ${nameFamily}"    # <- this line must follow the lines where $nameFirst and $nameFamily are defined
+### Note that the order of these definitions is important when one variable is to
+### contain the value of another. For example:
+###     nameFirst = Stephen
+###     nameFamily = Towler
+###     nameFull = "${nameFirst} ${nameFamily}"    # <- this line must follow the lines where $nameFirst and $nameFamily are defined
 
 
-   # Below are examples and some common variables I like to define, but
-   # deactivated for this script by the COMMENTBLOCK lines surrounding them.
-   # To use any of these, past them above first COMMENTBLOCK line and edit for
-   # your use.  (Every line between the two COMMENTBLOCK lines is ignored by
-   # this script:)
-   # TBD: I haven't looked at thse in a thousand years but should be fine for illustration:
-	#
+### Below are examples and some common variables I like to define, but
+### deactivated for this script by the COMMENTBLOCK lines surrounding them.
+### To use any of these, past them above first COMMENTBLOCK line and edit for
+### your use.  (Every line between the two COMMENTBLOCK lines is ignored by
+### this script:)
+### TBD: I haven't looked at thse in a thousand years but should be fine for illustration:
+###
 	: <<'COMMENTBLOCK'
 	   intensity="t1bfc0"			         # ...to be used in file and folder names
 	   orientation="radOrig"			      # ...ditto
@@ -371,8 +371,11 @@ COMMENTBLOCK
 
 ### Create some constants to make basic system information convenient for
 ### the script. These are technically variables but we are calling them
-### constants because their values don't change during the script.
+### constants because their values don't change during script execution.
 ###
+
+# NB: these are per-script constants, so it's safer to define them here rather
+# than in an internal function.
 
 listOfBasicConstants=''	
 
@@ -400,16 +403,11 @@ listOfBasicConstants="\$startDateTime ${listOfBasicConstants}"
 # echo "DEBUG: \${listOfBasicConstants} is:"
 # echo "${listOfBasicConstants}"
 
-# NB: these are per-script constants, and therefore must be defined here, rather than in a function:
 
 # ------------------------- FINISH: define basic script constants ------------------------- #
 
 
 # ------------------------- START: greet user/logs ------------------------- #
-
-# First get the script name for printing in the banner below:
-if [ -z "${scriptName}" ]; then scriptName="`basename ${0}`" ; fi 
-# ...then print banner:
 echo ""
 echo ""
 echo "#################################################################"
@@ -433,11 +431,11 @@ echo ""
 
 
 ### ...or, to be fancier, you could first call one or more of the internal
-### functions defined in this script. These are designed to make your
+### functions defined in this script template. They are designed to make your
 ### script-writing easier, and you can inspect their code right here in
 ### this file. Consider starting your script with one or more of these internal
 ### functions. Then the lines that do the real work of your script should appear
-### after these internal function calls:
+### after the function calls:
 
 ### 1) If this script needs to generate output files, it might be nice to create
 ###    an informatively-named temporary directory ${tempDir} as their destination.
@@ -472,9 +470,8 @@ echo ""
 ###    To do so just uncomment this line, which will call one of this template
 ###    script's internal functions:
 ###
-#fxnSelftestBasic
+fxnSelftestBasic
 #...the script will exit after completing the self-test, ignoring all lines below.
-
 
 
 
@@ -505,6 +502,8 @@ echo ""
 COMMENTBLOCK
 
 
+#TBD: call fxnSelftestBasic if nothing happened earlier in the script
+
 # ------------------------- FINISHED: body of script ------------------------- #
 
 
@@ -518,7 +517,7 @@ if [ -n "${tempDir}" ]; then
 	tempDirFileCount=`find ${tempDir} | wc -l`
 	echo ""
 	echo ""
-	echo "NB: temporary directory is ${tempDir}"
+	echo "This script's temporary directory is ${tempDir}"
 	echo "...and it contains: ${tempDirFileCount} files and folders taking up total disk space of ${tempDirSize}"
 	ls -ld ${tempDir}
 	echo ""
