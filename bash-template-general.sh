@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# LOCATION:	<location including filename>
-# USAGE:	see the fxnPrintUsage() function below 
+# LOCATION:	      <location including filename>
+# USAGE:	         see the fxnPrintUsage() function below 
 #
-# CREATED:	<date> by stowler@gmail.com
+# CREATED:	      <date> by stowler@gmail.com
 # LAST UPDATED:	<date> by stowler@gmail.com
 #
 # DESCRIPTION:
@@ -19,12 +19,12 @@
 # OTHER ASSUMPTIONS:
 # <EDITME: list or describe>
 #
+#
 # READING AND CODING NOTES:
 # 
 # This script contains a few first-level sections, each starting with one of these headings:
 # ------------------------- START: define functions ------------------------- #
-# ------------------------- START: define constants ------------------------- #
-# ------------------------- START: process the invocation ------------------------- #
+# ------------------------- START: define basic script constants ------------------------- #
 # ------------------------- START: greet user/logs ------------------------- #
 # ------------------------- START: body of script ------------------------- #
 # ------------------------- START: restore environment and say bye to user/logs ------------------------- #
@@ -34,7 +34,7 @@
 #
 # Search for "TBD" to find areas where I have work to do, decisions to make, etc. TBD.
 #
-# Search for "DEBUG" go find areas that I only intend to execute duing debugging.
+# Search for "DEBUG" to find areas that I only intend to execute duing debugging.
 #
 #
 ########### !!!!!!! EDITME FOR TEMPLATE ONLY. REMOVE FROM CHILD SCRIPTS: !!!!!!! ###########
@@ -134,9 +134,9 @@ fxnPrintUsage() {
 fxnProcessInvocation() {
 
 # always: check for number of arguments, even if expecting zero:
-if [ $# -ne 0 ] ; then
+if [ "${scriptArgsCount}" -ne "0" ] ; then
    echo ""
-   echo "ERROR: this script isn't expecting any arguments."
+   echo "ERROR: this script isn't expecting any arguments. You provided $scriptArgsCount ."
    echo ""
    fxnPrintUsage
    echo ""
@@ -192,13 +192,14 @@ fxnSelftestBasic() {
    # of this script. This can be used to confirm that the basic functions
    # of the script are working on a particular system, or that they haven't
    # been broken by recent edits.
+   echo ""
 }
 
 
 fxnSelftestFull() {
   # Tests the full function of the script. Begins by calling fxnSelftestBaic() , and then...
   # <EDITME: description of tests and validating data>
-  fxnSelftestBasic()
+  fxnSelftestBasic
 }
 
 
@@ -211,8 +212,8 @@ fxnCalc() {
 }
 
 
-fxnSetTempDir(){
-   # Create a temporary directory ${tempDir} 
+fxnSetTempDir() {
+   # Attempt to create a temporary directory ${tempDir} 
    # This will be a child of directory ${tempParent}, which maybe set prior to calling this fxn, 
    # or will be set to something sensible by this function.
    #
@@ -239,6 +240,9 @@ fxnSetTempDir(){
 	    create a new temporary directory. Edit script's $tempParent variable. Exiting."
       exit 1
    fi
+   # echo "DEBUG"
+   # echo "DEBUG: \${tempParent} is ${tempParent}"
+   # echo "DEBUG:"
 
    # Now that writable ${tempParent} has been confirmed, create ${tempDir}:
    # e.g., tempDir="${tempParent}/${startDateTime}-from_${scriptName}.${scriptPID}"
@@ -256,85 +260,6 @@ fxnSetTempDir(){
    fi
 }
 
-
-fxnValidateImages() {
-   invalidInputList=''
-   for image in $@; do
-      # is file a readable image?
-      3dinfo $image &>/dev/null
-      if [ "$?" -ne "0" ]; then
-         invalidInputList="`echo ${invalidInputList} ${image}`"
-      fi
-   done
-   if [ ! -z "${invalidInputList}" ]; then
-      echo ""
-      echo "ERROR: these input files do not exist or are not valid 3d/4d images. Exiting:"
-      echo ""
-      echo "${invalidInputList}"
-      echo ""
-      exit 1
-   fi
-}
-
-fxnSetSomeBasicConstants() {
-	# Create some constants to make basic system information convenient for
-	# the script. These are technically variables but we are calling them
-	# constants because their values don't change during the script.
-	#
-	# Here we set the value of each variable, but only if it doesn't
-	# already have a value. For example: before the nominal script body I
-	# assign a value to ${scriptName} so that it can appear in a welcome
-	# banner, even before the call to this function. We wouldn't want to
-	# overwrite the value of ${scriptName} here if it had been set to
-	# something specific in the script body.
-	# 
-	# Performed via the if/the/else statements below for each constant:
-	#
-	# if the variable is empty: 
-	# 	assign a value to the variable AND
-	# 	add its name to the list of constants
-	# else it's not empty:
-	# 	it already has a value so just add its name to the list
-	# 
-	listOfBasicConstants=''	
-
-	if [ -z "${scriptName}" ]; then
-		scriptName="`basename $0`"
-		listOfBasicConstants="scriptName ${listOfBasicConstants}"
-	else
-		listOfBasicConstants="scriptName ${listOfBasicConstants}"
- 	fi
-
-	if [ -z "${scriptPID}" ]; then
-		scriptPID="$$"
-		listOfBasicConstants="scriptPID ${listOfBasicConstants}"
-	else
-		listOfBasicConstants="scriptPID ${listOfBasicConstants}"
-	fi
-
-	if [ -z "${scriptUser}" ]; then
-		scriptUser="`whoami`"
-		listOfBasicConstants="scriptUser ${listOfBasicConstants}"
-	else
-		listOfBasicConstants="scriptUser ${listOfBasicConstants}"
-	fi
-	if [ -z "${startDate}" ]; then
-		startDate="`date +%Y%m%d`"
-		listOfBasicConstants="startDate ${listOfBasicConstants}"
-	else
-		listOfBasicConstants="startDate ${listOfBasicConstants}"
-	fi
-	if [ -z "${startDateTime}" ]; then
-		startDateTime="`date +%Y%m%d%H%M%S`"
-		listOfBasicConstants="startDateTime ${listOfBasicConstants}"
-	else
-		listOfBasicConstants="startDatetime ${listOfBasicConstants}"
-	fi
-	
-	# and then list the variables we defined:
-	echo "DEBUG: \${listOfBasicConstants} is:"
-	echo "${listOfBasicConstants}"
-}
 
 fxnSetSomeFancyConstants() {
 	# Note that the order of these definitions is important when one variable is to
@@ -417,17 +342,45 @@ COMMENTBLOCK
 # ------------------------- FINISHED: define functions ------------------------- #
 
 
+# ------------------------- START: define basic script constants ------------------------- #
 
-# ------------------------- START: process the invocation ------------------------- #
+# Create some constants to make basic system information convenient for
+# the script. These are technically variables but we are calling them
+# constants because their values don't change during the script.
+#
 
+listOfBasicConstants=''	
 
-# ------------------------- FINISHED: process the invocation ------------------------- #
+scriptName="`basename $0`"
+listOfBasicConstants="scriptName ${listOfBasicConstants}"
+
+scriptPID="$$"
+listOfBasicConstants="scriptPID ${listOfBasicConstants}"
+
+scriptArgsCount=$#
+listOfBasicConstants="scriptArgsCount ${listOfBasicConstants}"
+
+scriptUser="`whoami`"
+listOfBasicConstants="scriptUser ${listOfBasicConstants}"
+
+startDate="`date +%Y%m%d`"
+listOfBasicConstants="startDate ${listOfBasicConstants}"
+
+startDateTime="`date +%Y%m%d%H%M%S`"
+listOfBasicConstants="startDateTime ${listOfBasicConstants}"
+
+# echo "DEBUG: \${listOfBasicConstants} is:"
+# echo "${listOfBasicConstants}"
+
+# NB: these are per-script constants, and therefore must be defined here, rather than in a function:
+
+# ------------------------- FINISH: define basic script constants ------------------------- #
 
 
 # ------------------------- START: greet user/logs ------------------------- #
 
 # First get the script name for printing in the banner below:
-if [ -z "${scriptName}" ]; do scriptName="`basename ${0}`"; done fi 
+if [ -z "${scriptName}" ]; then scriptName="`basename ${0}`" ; fi 
 # ...then print banner:
 echo ""
 echo ""
@@ -442,43 +395,50 @@ echo ""
 
 # ------------------------- START: body of script ------------------------- #
 
-# ...or, to be fancier, you could uncomment the following line to process
-# command-line arguments using the script's internal function:
-# fxnProcessInvocation()
+# To keep things simple, you could just paste a list of commands on the lines
+# immediately below this comment, save the script under a new name, and run it.
+# This would work because by default this template script isn't expecting to
+# receive arguments on the commandline or automatically write anything to the
+# filesystem (though it can...see below). 
+# Paste commands here if that's all you need right now:
 
-# To keep things simple, you could just paste a list of bash commands below
-# this comment, save the script under a new name, and run it. This would work
-# because by default this template script isn't expecting to receive arguments
-# on the commandline or automatically write anything to the filesystem.
-# Paste lines here if that's all you need right now:
-
-
-# ...or, to be fancier, you could first call one or more of this template
-# script's internal functions, designed to make your scripting easier:
+# ...or, to be fancier, you could first call one or more of the internal
+# functions defined in this script. These are designed to make your
+# script-writing easier:
 
 
-# 1) It helps to declare some constants that contain system information
-#    ($scriptName, $startDateTime, etc.). 
+
+# 1) If this script needs to generate output files, it might be nice to create
+#    an informatively-named temporary directory ${tempDir} as their destination.
+#    To do so just uncomment these two lines:
+#fxnSetTempDir                 # <- use internal function to create ${tempDir}
+#deleteTempDirAtEndOfScript=1  # <- set to 1 to delete ${tempDir} or 0 to leave it. See end of script.
+
+
+# 2) Does this script need to accept arguments on the commandline? If so, it
+#    would be nice to check the validity of those arguments, and assign them
+#    to variables in this script.
 #    To do so just uncomment this line, which will call one of this template
 #    script's internal functions:
 #
-# fxnSetSomeBasicConstants
+#fxnProcessInvocation          
+# ...and then edit its function definition for your specific needs.
 
 
-# 2) If this script will generate output files, it might be nice to create an
-#    informatively-named temporary directory ${tempDir} as their destination.
+# 3) It's convenient to declare some constants that contain information
+#    specific for a script's goals (file paths and names, lists of participants,
+#    etc.)
 #    To do so just uncomment this line, which will call one of this template
 #    script's internal functions:
-#
-# fxnSetTempDir                 # <- use internal function to create ${tempDir}
-# removeTempDirAtEndOfScript=1  # <- set to 1 to delete ${tempDir} or 0 to leave it. See end of script.
+#fxnSetSomeFancyConstants
+# ...and then edit its function definition for your specific needs.
+
 
 # fxnSelftestBasic
 # fxnSelftestFull
 # fxnValidateImages $@     # verify that all input images are actually images
 
 
-# 3) Need to accept arguments on the commandline? 
 # For long processes that get called from this script, the user (or log reviwer) might
 # like to have some context. Uncomment out this block of banners and place your call
 # to someProgramThatJustTakesForever.sh inside of them:
@@ -514,24 +474,23 @@ COMMENTBLOCK
 # Output some final status info to the user/log and clean-up any resources.
 
 # If a ${tempDir} was defined, remind the user about it and (optionally) delete it:
-if [ -n ${tempDir} ]; then 
+if [ -n "${tempDir}" ]; then 
 	echo ""
 	echo ""
 	echo "NB: temporary directory was ${tempDir}"
 	ls -ld ${tempDir}
 	echo ""
-	echo ""
 	# if previously indicated, delete $tempDir
-	if [ ${removeTempDirAtEndOfScript} = "1" ]; then
+	if [ ${deleteTempDirAtEndOfScript} = "1" ]; then
 		echo -n "...which I am now removing..."
 		rm -fr ${tempDir}
-		echo "done. Proof per ls -ld \${tempDir} :"
-		ls -l d ${tempDir}
-	# ...else just provide a remind of what's there:
+		echo "done. Proof of removal per \"ls -ld \${tempDir}\" :"
+		ls -ld ${tempDir}
+	# ...else just provide a reminder of what's there:
 	else
 		tempDirSize=`du -sh | cut -d ' ' -f 1`
 		tempDirFileCount=`find ${tempDir} | wc -l`
-		echo "...and it contains ${tempDirFileCount} files and folders taking up total disk space of ${tempDirSize}  ."
+		echo "...and it contains: ${tempDirFileCount} files and folders taking up total disk space of ${tempDirSize}"
 	fi
 	echo ""
 	echo ""
