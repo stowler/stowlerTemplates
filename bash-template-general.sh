@@ -472,7 +472,7 @@ echo ""
 ###    To do so just uncomment this line, which will call one of this template
 ###    script's internal functions:
 ###
-fxnSelftestBasic
+#fxnSelftestBasic
 #...the script will exit after completing the self-test, ignoring all lines below.
 
 
