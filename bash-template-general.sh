@@ -192,7 +192,10 @@ fxnSelftestBasic() {
    # of this script. This can be used to confirm that the basic functions
    # of the script are working on a particular system, or that they haven't
    # been broken by recent edits.
-   echo ""
+
+   # 1) Strip out all comments that are marked as teaching. This will create a
+   # slimmer, more readable version of the script :
+   teachingMarker='###'
 }
 
 
@@ -213,7 +216,7 @@ fxnCalc() {
 
 
 fxnSetTempDir() {
-   # Attempt to create a temporary directory ${tempDir} 
+   # Attempt to create a temporary directory ${tempDir} .
    # This will be a child of directory ${tempParent}, which maybe set prior to calling this fxn, 
    # or will be set to something sensible by this function.
    #
@@ -222,8 +225,7 @@ fxnSetTempDir() {
    #    remember to assign values before calling fxnSetTempDir!)
    #    e.g., tempParent=${participantDirectory}/manyTempProcessingDirsForThisParticipant && fxnSetTempDir()
 
-   # first manage ${tempParent}: 
-   # is it already defined as a writable directory? If not, try to define a reasonable one:
+   # Is $tempParent already defined as a writable directory? If not, try to define a reasonable one:
    tempParentPrevouslySetToWritableDir=''
    hostname=`hostname -s`
    kernel=`uname -s`
@@ -344,10 +346,10 @@ COMMENTBLOCK
 
 # ------------------------- START: define basic script constants ------------------------- #
 
-# Create some constants to make basic system information convenient for
-# the script. These are technically variables but we are calling them
-# constants because their values don't change during the script.
-#
+### Create some constants to make basic system information convenient for
+### the script. These are technically variables but we are calling them
+### constants because their values don't change during the script.
+###
 
 listOfBasicConstants=''	
 
@@ -395,53 +397,63 @@ echo ""
 
 # ------------------------- START: body of script ------------------------- #
 
-# To keep things simple, you could just paste a list of commands on the lines
-# immediately below this comment, save the script under a new name, and run it.
-# This would work because by default this template script isn't expecting to
-# receive arguments on the commandline or automatically write anything to the
-# filesystem (though it can...see below). 
-# Paste commands here if that's all you need right now:
-
-# ...or, to be fancier, you could first call one or more of the internal
-# functions defined in this script. These are designed to make your
-# script-writing easier:
+### To keep things simple, you could just paste a list of commands on the lines
+### immediately below this comment, save the script under a new name, and run it.
+### This would work because by default this template script isn't expecting to
+### receive arguments on the commandline or automatically write anything to the
+### filesystem (though it does have those powers...see below). 
+### Paste commands here if that's all you need right now:
 
 
 
-# 1) If this script needs to generate output files, it might be nice to create
-#    an informatively-named temporary directory ${tempDir} as their destination.
-#    To do so just uncomment these two lines:
+### ...or, to be fancier, you could first call one or more of the internal
+### functions defined in this script. These are designed to make your
+### script-writing easier, and you can inspect their code right here in
+### this file. Consider starting your script with one or more of these, and
+### then paste the lines that do the real work of your script:
+
+### 1) If this script needs to generate output files, it might be nice to create
+###    an informatively-named temporary directory ${tempDir} as their destination.
+###    To do so just uncomment these two lines:
+###
 #fxnSetTempDir                 # <- use internal function to create ${tempDir}
 #deleteTempDirAtEndOfScript=1  # <- set to 1 to delete ${tempDir} or 0 to leave it. See end of script.
 
 
-# 2) Does this script need to accept arguments on the commandline? If so, it
-#    would be nice to check the validity of those arguments, and assign them
-#    to variables in this script.
-#    To do so just uncomment this line, which will call one of this template
-#    script's internal functions:
-#
+### 2) Does this script need to accept arguments on the commandline? If so, it
+###    would be nice to check the validity of those arguments, and assign them
+###    to variables in this script.
+###    To do so just uncomment this line, which will call one of this template
+###    script's internal functions:
+###
 #fxnProcessInvocation          
 # ...and then edit its function definition for your specific needs.
 
 
-# 3) It's convenient to declare some constants that contain information
-#    specific for a script's goals (file paths and names, lists of participants,
-#    etc.)
-#    To do so just uncomment this line, which will call one of this template
-#    script's internal functions:
+### 3) It's convenient to declare some constants that contain information
+###    specific for a script's goals (file paths and names, lists of participants,
+###    etc.)
+###    To do so just uncomment this line, which will call one of this template
+###    script's internal functions:
+###
 #fxnSetSomeFancyConstants
 # ...and then edit its function definition for your specific needs.
 
 
-# fxnSelftestBasic
-# fxnSelftestFull
-# fxnValidateImages $@     # verify that all input images are actually images
+### 4) It's good to confirm that a script is working correctly after editing it
+###    or transfering to a new machine.
+###    To do so just uncomment this line, which will call one of this template
+###    script's internal functions:
+###
+#fxnSelftestBasic
+#...the script will exit after completing the self-test, ignoring all lines below.
 
 
-# For long processes that get called from this script, the user (or log reviwer) might
-# like to have some context. Uncomment out this block of banners and place your call
-# to someProgramThatJustTakesForever.sh inside of them:
+
+
+### For long processes that get called from this script, the user (or log reviwer) might
+### like to have some context. Uncomment out this block of banners and place your call
+### to someProgramThatJustTakesForever.sh inside of them:
 : <<'COMMENTBLOCK'
 echo ""
 echo ""
