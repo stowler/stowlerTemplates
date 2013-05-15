@@ -446,31 +446,39 @@ echo ""
 # command-line arguments using the script's internal function:
 # fxnProcessInvocation()
 
-# EDITME: To keep things simple, you can just paste your list of bash
-# commands below this comment, save the script, and run it. This would work
-# because by default this template isn't expecting to receive arguments on the
-# commandline or automatically write anything to the filesystem. If that's what
-# you need right now, paste away:
+# To keep things simple, you could just paste a list of bash commands below
+# this comment, save the script under a new name, and run it. This would work
+# because by default this template script isn't expecting to receive arguments
+# on the commandline or automatically write anything to the filesystem.
+# Paste lines here if that's all you need right now:
 
 
-# ...or, to be fancier, you could first call one or more of this template's
-# internal functions, designed to make your scripting easier:
+# ...or, to be fancier, you could first call one or more of this template
+# script's internal functions, designed to make your scripting easier:
 
-# 1) It helps to have some variables that contain system information
-#    ($scriptName, $startDateTime, etc.). To define a basic set of these constants,
-#    just uncomment this line, which will call this template's internal function:
+
+# 1) It helps to declare some constants that contain system information
+#    ($scriptName, $startDateTime, etc.). 
+#    To do so just uncomment this line, which will call one of this template
+#    script's internal functions:
+#
 # fxnSetSomeBasicConstants
 
-# 2) 
-# 	Need a place to put output files? Just uncomment these lines:
-# 	fxnSetTempDir                 # <- use internal function to create ${tempDir}
-# 	removeTempDirAtEndOfScript=1  # <- set to 1 (==delete) or 0 . See end of script.
+
+# 2) If this script will generate output files, it might be nice to create an
+#    informatively-named temporary directory ${tempDir} as their destination.
+#    To do so just uncomment this line, which will call one of this template
+#    script's internal functions:
+#
+# fxnSetTempDir                 # <- use internal function to create ${tempDir}
+# removeTempDirAtEndOfScript=1  # <- set to 1 to delete ${tempDir} or 0 to leave it. See end of script.
 
 # fxnSelftestBasic
 # fxnSelftestFull
 # fxnValidateImages $@     # verify that all input images are actually images
 
 
+# 3) Need to accept arguments on the commandline? 
 # For long processes that get called from this script, the user (or log reviwer) might
 # like to have some context. Uncomment out this block of banners and place your call
 # to someProgramThatJustTakesForever.sh inside of them:
@@ -502,7 +510,7 @@ COMMENTBLOCK
 
 
 # ------------------------- START: restore environment and say bye to user/logs ------------------------- #
-
+#
 # Output some final status info to the user/log and clean-up any resources.
 
 # If a ${tempDir} was defined, remind the user about it and (optionally) delete it:
