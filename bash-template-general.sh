@@ -36,8 +36,11 @@
 #
 # Search for "DEBUG" to find areas that I only intend to execute duing debugging.
 #
+# Lines starting with "###" (three hash marks) are marked as training material
+# so they can be stripped out automatically
 #
-########### !!!!!!! EDITME FOR TEMPLATE ONLY. REMOVE FROM CHILD SCRIPTS: !!!!!!! ###########
+#
+# #########!!!!!!! EDITME FOR TEMPLATE ONLY. REMOVE FROM CHILD SCRIPTS: !!!!!!! ###########
 # A meta note for editing this template :
 #
 # LOCATION: 
@@ -112,7 +115,7 @@
 # - make sure edits are reflected in fxnSelftestBasic()
 # - test with fxnSelftestBasic() after editing
 # 
-########### !!!!!!! EDITME FOR TEMPLATE-ONLY: REMOVE FROM CHILD SCRIPTS !!!!!!! ###########
+# ########## !!!!!!! EDITME FOR TEMPLATE-ONLY: REMOVE FROM CHILD SCRIPTS !!!!!!! ###########
 
 
 
@@ -122,14 +125,16 @@
 # any order regardless of interdependencies since each is not interpreted until
 # called from the body of the script:
 
+
 fxnPrintUsage() {
    # EDITME: customize for each script:
-   echo >&2 "$0 - a script to do something"
+   echo >&2 "$0 - a script to do something. Example of a usage note:"
    echo >&2 "Usage: scriptname [-r|-n] -v file {file2 ...}"
    echo >&2 "  -r   print data rows only (no column names)"
    echo >&2 "  -n   pring column names ONLY (no data rows)"
    echo >&2 "  -v   be verbose"
 }
+
 
 fxnProcessInvocation() {
 
@@ -186,16 +191,43 @@ fi
 COMMENTBLOCK
 }
 
+
 fxnSelftestBasic() {
    # Tests the basic funcions and variables of the template on which this
-   # script is based. Valid output appears as comment text at the bottom
-   # of this script. This can be used to confirm that the basic functions
+   # script is based. Valid output may appear as comment text at the bottom
+   # of this script (TBD). This can be used to confirm that the basic functions
    # of the script are working on a particular system, or that they haven't
    # been broken by recent edits.
 
-   # 1) Strip out all comments that are marked as teaching. This will create a
+   echo "Running internal function fxnSelftestBasic :"
+   echo ""
+
+   # expose the basic constants defined in the script:
+   echo "Some basic constants have been defined in this script."
+   echo "Their names are listed in variable \${listOfBasicConstants} : "
+   echo "${listOfBasicConstants}"
+   echo ""
+   #echo "...and here are their values:"
+   #for scriptConstantName in ${listOfBasicConstants}; do
+   #   scriptConstantValue="`echo ${scriptConstantName}`"
+   #   echo "${scriptConstantName} == ${scriptConstantValue}"
+   #done
+
+   # test internal function fxnSetTempDir:
+   fxnSetTempDir
+   deleteTempDirAtEndOfScript=1
+
+   # Strip out all comments that are marked as teaching. This will create a
    # slimmer, more readable version of the script :
-   teachingMarker='###'
+   trainingMarker='###'       # trainingMarker must be sed-friendly. See below:
+   cp ${scriptDir}/${scriptName} ${tempDir}/script-orig.sh
+   sed "/^${trainingMarker}/ d" ${tempDir}/script-orig.sh > ${tempDir}/script-withoutTrainingComments.sh
+   linecountOrig="`wc -l ${tempDir}/script-orig.sh | awk '{print $1}'`"
+   linecountSkinny="`wc -l ${tempDir}/script-withoutTrainingComments.sh | awk '{print $1}'`"
+   echo ""
+   echo "This script has ${linecountOrig} lines, and the version without training comments has ${linecountSkinny} lines:"
+   echo ""
+   ls -l ${tempDir}/*
 }
 
 
@@ -271,21 +303,12 @@ fxnSetSomeFancyConstants() {
 	#     nameFull = "${nameFirst} ${nameFamily}"    # <- this line must follow the lines where $nameFirst and $nameFamily are defined
 
 
-	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# 1) anything related to command-line arguments:
-	#
-	# e.g. firstArgumentValue="$1"
-	#
-
-
-	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-	# 3) variables specific to the goals of this script:
-	#    (e.g., variables for file locations, filenames, long arguments, etc.)
-	# 
-
-	# Below are examples and some common variables I like to define, but deactivated for this script by the COMMENTBLOCK lines surrounding them. 
-	# To use any of these, past them above first COMMENTBLOCK line and edit for your use.
-	# (Every line between the two COMMENTBLOCK lines is ignored by this script:)
+   # Below are examples and some common variables I like to define, but
+   # deactivated for this script by the COMMENTBLOCK lines surrounding them.
+   # To use any of these, past them above first COMMENTBLOCK line and edit for
+   # your use.  (Every line between the two COMMENTBLOCK lines is ignored by
+   # this script:)
+   # TBD: I haven't looked at thse in a thousand years but should be fine for illustration:
 	#
 	: <<'COMMENTBLOCK'
 	   intensity="t1bfc0"			         # ...to be used in file and folder names
@@ -354,22 +377,25 @@ COMMENTBLOCK
 listOfBasicConstants=''	
 
 scriptName="`basename $0`"
-listOfBasicConstants="scriptName ${listOfBasicConstants}"
+listOfBasicConstants="\$scriptName ${listOfBasicConstants}"
+
+scriptDir="`dirname $0`"
+listOfBasicConstants="\$scriptDir ${listOfBasicConstants}"
 
 scriptPID="$$"
-listOfBasicConstants="scriptPID ${listOfBasicConstants}"
+listOfBasicConstants="\$scriptPID ${listOfBasicConstants}"
 
 scriptArgsCount=$#
-listOfBasicConstants="scriptArgsCount ${listOfBasicConstants}"
+listOfBasicConstants="\$scriptArgsCount ${listOfBasicConstants}"
 
 scriptUser="`whoami`"
-listOfBasicConstants="scriptUser ${listOfBasicConstants}"
+listOfBasicConstants="\$scriptUser ${listOfBasicConstants}"
 
 startDate="`date +%Y%m%d`"
-listOfBasicConstants="startDate ${listOfBasicConstants}"
+listOfBasicConstants="\$startDate ${listOfBasicConstants}"
 
 startDateTime="`date +%Y%m%d%H%M%S`"
-listOfBasicConstants="startDateTime ${listOfBasicConstants}"
+listOfBasicConstants="\$startDateTime ${listOfBasicConstants}"
 
 # echo "DEBUG: \${listOfBasicConstants} is:"
 # echo "${listOfBasicConstants}"
@@ -409,8 +435,9 @@ echo ""
 ### ...or, to be fancier, you could first call one or more of the internal
 ### functions defined in this script. These are designed to make your
 ### script-writing easier, and you can inspect their code right here in
-### this file. Consider starting your script with one or more of these, and
-### then paste the lines that do the real work of your script:
+### this file. Consider starting your script with one or more of these internal
+### functions. Then the lines that do the real work of your script should appear
+### after these internal function calls:
 
 ### 1) If this script needs to generate output files, it might be nice to create
 ###    an informatively-named temporary directory ${tempDir} as their destination.
@@ -445,7 +472,7 @@ echo ""
 ###    To do so just uncomment this line, which will call one of this template
 ###    script's internal functions:
 ###
-#fxnSelftestBasic
+fxnSelftestBasic
 #...the script will exit after completing the self-test, ignoring all lines below.
 
 
@@ -487,22 +514,21 @@ COMMENTBLOCK
 
 # If a ${tempDir} was defined, remind the user about it and (optionally) delete it:
 if [ -n "${tempDir}" ]; then 
+	tempDirSize=`du -sh | cut -d ' ' -f 1`
+	tempDirFileCount=`find ${tempDir} | wc -l`
 	echo ""
 	echo ""
-	echo "NB: temporary directory was ${tempDir}"
+	echo "NB: temporary directory is ${tempDir}"
+	echo "...and it contains: ${tempDirFileCount} files and folders taking up total disk space of ${tempDirSize}"
 	ls -ld ${tempDir}
 	echo ""
 	# if previously indicated, delete $tempDir
 	if [ ${deleteTempDirAtEndOfScript} = "1" ]; then
 		echo -n "...which I am now removing..."
 		rm -fr ${tempDir}
-		echo "done. Proof of removal per \"ls -ld \${tempDir}\" :"
+		echo "done." 
+      echo "Proof of removal per \"ls -ld \${tempDir}\" :"
 		ls -ld ${tempDir}
-	# ...else just provide a reminder of what's there:
-	else
-		tempDirSize=`du -sh | cut -d ' ' -f 1`
-		tempDirFileCount=`find ${tempDir} | wc -l`
-		echo "...and it contains: ${tempDirFileCount} files and folders taking up total disk space of ${tempDirSize}"
 	fi
 	echo ""
 	echo ""
