@@ -503,24 +503,31 @@ COMMENTBLOCK
 
 # ------------------------- START: restore environment and say bye to user/logs ------------------------- #
 
-# Output some final status info to the user and clean-up any resources.
+# Output some final status info to the user/log and clean-up any resources.
 
-# About the temporary directory, if it was defined:
-if [ -n ${tempDir} ]; do
+# If a ${tempDir} was defined, remind the user about it and (optionally) delete it:
+if [ -n ${tempDir} ]; then 
 	echo ""
 	echo ""
-	echo "(NB: temporary directory was ${tempDir})"
+	echo "NB: temporary directory was ${tempDir}"
+	ls -ld ${tempDir}
 	echo ""
 	echo ""
-done
-# ...
-if [ ${removeTempDirAtEndOfScript} = "1" ]; do
-
-done
-
-
-	# we care about? If so, let's clean-up:
-	# rm -fr ${tempDir} && echo "temporary directory ${tempDir} has been removed.
+	# if previously indicated, delete $tempDir
+	if [ ${removeTempDirAtEndOfScript} = "1" ]; then
+		echo -n "...which I am now removing..."
+		rm -fr ${tempDir}
+		echo "done. Proof per ls -ld \${tempDir} :"
+		ls -l d ${tempDir}
+	# ...else just provide a remind of what's there:
+	else
+		tempDirSize=`du -sh | cut -d ' ' -f 1`
+		tempDirFileCount=`find ${tempDir} | wc -l`
+		echo "...and it contains ${tempDirFileCount} files and folders taking up total disk space of ${tempDirSize}  ."
+	fi
+	echo ""
+	echo ""
+fi
 
 # Did we change any environmental variables? It would be polite to set them to their original values:
 # export FSLOUTPUTTYPE=${FSLOUTPUTTYPEorig}
