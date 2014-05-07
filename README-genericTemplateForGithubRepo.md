@@ -23,10 +23,10 @@ Requested by [who] on [date] by [phone/email/etc.]:
 - TODO: last step
 
 
-2. PLANNING AND REFERENCE
+2. PROJECT NOTES
 ==========================
 
-2.1. contact info and reference numbers
+2.1. contacts and reference numbers
 ----------------------------------------------
 - [engineer/department/collaborator]
   - PHONE #:
@@ -34,24 +34,23 @@ Requested by [who] on [date] by [phone/email/etc.]:
   - TICKET/REF/ISSUE #:
 
 
-2.2. budgets, invoicing, target dates
+2.2. budgets and deadlines
 ---------------------------------------
-Current data for budgeting:
+References for current budgeting information:
 
 - Atlanta VA CVNR imaging core fee matrix: ____
 - current rates for Stephen Towler: _______
 - sample line-item budgeting from Stephen Towler: ____
 
-Deliverables:
+DELIVERABLES: [figure/table/data/etc.]
 
-- DELIVERABLE: some figure/data/etc.
-  - target completion date: _____
-  - total budgeted [hours/dollars]: _____
-    - ...is the equivalent of ____ [hours/dollars]
-    - per week/month between [startDate] and [endDate]
-  - invoice code from stowler: [harvestapp Project Name]
-  - invoice code from client: ____
-  - invoice and payment methods: ____
+- target completion date: _____
+- total budgeted [hours/dollars]: _____
+  - ...is the equivalent of ____ [hours/dollars]
+  - per week/month between [startDate] and [endDate]
+- invoice code from stowler: [harvestapp Project Name]
+- invoice code from client: ____
+- invoice and payment methods: ____
 
 
 2.3. file paths and URLs
@@ -74,7 +73,8 @@ COMMAND/GUI NOTES AND IDIOSYNCRASIES:
 
 2.5. participant and session IDs (non-sensitive)
 -------------------------------------------------
-MR sessions of interest:
+MR participants and sessions of interest:
+
 - [task/rest] FMRI timeseries 
 - ___ runs per session
 ```
@@ -125,6 +125,7 @@ RAW DATA
 - transfer method: 
 
 FIGURES AND TABLES
+
 - Figure/Table X
   - title: ___
   - caption: ___
@@ -146,7 +147,7 @@ MANUSCRIPTS
 
 
 
-3. DATED PROGRESS NOTES
+3. PROJECT LOG
 =================================================
 (ordered recent to older)
 
