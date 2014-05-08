@@ -67,17 +67,17 @@ References for current budgeting information:
 DELIVERABLE(S): [TBD: describe figure/table/data/etc.]
 
 ```
-| fd                       | PROPOSED ON YYYYMMDD | INVOICED ON YYYYMMDD |
-|--------------------------|----------------------------------------------
-|START DATE                |  TBD                 |  TBD                 |
-|COMPLETION DATE           |  TBD                 |  TBD                 |
-|DOLLARS & HOURS TOTAL     |  TBD                 |  TBD                 |
-|DOLLARS & HOURS WEEKLY    |  TBD                 |  TBD                 |
-|CLIENT & CLIENT ACCOUNT   |  TBD                 |  TBD                 |
-|PAYMENT METHOD            |  TBD                 |  TBD                 |
-|INVOICE METHOD            |  TBD                 |  TBD                 |
-|INVOICE CODE FROM STOWLER |  TBD                 |  TBD                 |
-|INVOICE CODE FROM CLIENT  |  TBD                 |  TBD                 |
+|                           | PROPOSED ON YYYYMMDD | INVOICED ON YYYYMMDD |
+|---------------------------|----------------------------------------------
+| START DATE                |  TBD                 |  TBD                 |
+| COMPLETION DATE           |  TBD                 |  TBD                 |
+| DOLLARS & HOURS TOTAL     |  TBD                 |  TBD                 |
+| DOLLARS & HOURS WEEKLY    |  TBD                 |  TBD                 |
+| CLIENT & CLIENT ACCOUNT   |  TBD                 |  TBD                 |
+| PAYMENT METHOD            |  TBD                 |  TBD                 |
+| INVOICE METHOD            |  TBD                 |  TBD                 |
+| INVOICE CODE FROM STOWLER |  TBD                 |  TBD                 |
+| INVOICE CODE FROM CLIENT  |  TBD                 |  TBD                 |
 ```
 
 
