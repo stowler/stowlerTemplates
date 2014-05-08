@@ -59,27 +59,33 @@ Requested by [who] on [date] by [phone/email/etc.]:
 ---------------------------------------
 References for current budgeting information:
 
-- Atlanta VA CVNR imaging core fee matrix: ____
-- current rates for Stephen Towler: _______
-- sample line-item budgeting from Stephen Towler: ____
+- sliding scale for Atlanta VA CVNR imaging core: http://j.mp/imagingCoreSlidingScale
+- hourly rates for Atlanta VA CVNR imaging core: TBD
+- sample line-item budgeting from Stephen Towler: TBD
 
-DELIVERABLES: [figure/table/data/etc.]
 
-- target completion date: _____
-- total budgeted [hours/dollars]: _____
-  - ...is the equivalent of ____ [hours/dollars]
-  - per week/month between [startDate] and [endDate]
-- invoice code from stowler: [harvestapp Project Name]
-- invoice code from client: ____
-- invoice and payment methods: ____
+DELIVERABLE(S): [TBD: describe figure/table/data/etc.]
+
+|                          | PROPOSED ON YYYYMMDD | INVOICED ON YYYYMMDD |
+|--------------------------|----------------------------------------------
+|START DATE                |  TBD                 |  TBD                 |
+|COMPLETION DATE           |  TBD                 |  TBD                 |
+|DOLLARS & HOURS TOTAL     |  TBD                 |  TBD                 |
+|DOLLARS & HOURS WEEKLY    |  TBD                 |  TBD                 |
+|CLIENT & CLIENT ACCOUNT   |  TBD                 |  TBD                 |
+|PAYMENT METHOD            |  TBD                 |  TBD                 |
+|INVOICE METHOD            |  TBD                 |  TBD                 |
+|INVOICE CODE FROM STOWLER |  TBD                 |  TBD                 |
+|INVOICE CODE FROM CLIENT  |  TBD                 |  TBD                 |
+
 
 
 2.3. file paths and URLs
 ------------------------
-- this repository's public browsable URL: _______
-- zip file containing all qcReports and code: ______
-  - unzip, and then _____
-  - does not include _____
+- this repository's public browsable URL: TBD
+- zip file containing all qcReports and code: TBD
+  - unzip, and then TBD
+  - does not include TBD
 - work was performed in `[user]@[host]:[workingDirectory]`
 
 
