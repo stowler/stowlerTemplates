@@ -1,3 +1,24 @@
+**Table of Contents**
+
+- [1. SCOPE OF WORK](#user-content-1-scope-of-work)
+	- [1.1. original request](#user-content-11-original-request)
+	- [1.2. task list](#user-content-12-task-list)
+- [2. PROJECT NOTES](#user-content-2-project-notes)
+	- [2.1. contacts and reference numbers](#user-content-21-contacts-and-reference-numbers)
+	- [2.2. budgets and deadlines](#user-content-22-budgets-and-deadlines)
+	- [2.3. file paths and URLs](#user-content-23-file-paths-and-urls)
+	- [2.4. software notes](#user-content-24-software-notes)
+	- [2.5. participant and session IDs (non-sensitive)](#user-content-25-participant-and-session-ids-non-sensitive)
+	- [2.6. FMRI stimuli and recorded behavior](#user-content-26-fmri-stimuli-and-recorded-behavior)
+	- [2.7. a priori regions of interest](#user-content-27-a-priori-regions-of-interest)
+	- [2.8. hypotheses & contrasts](#user-content-28-hypotheses--contrasts)
+	- [2.9. mixed effects structures](#user-content-29-mixed-effects-structures)
+	- [2.10. power analyses](#user-content-210-power-analyses)
+	- [2.11. relevant literature](#user-content-211-relevant-literature)
+	- [2.12. notes about deliverables](#user-content-212-notes-about-deliverables)
+- [3. PROJECT LOG](#user-content-3-project-log)
+
+
 Below: notes from my work [on/supporting ____].
 
 
