@@ -66,6 +66,7 @@ References for current budgeting information:
 
 DELIVERABLE(S): [TBD: describe figure/table/data/etc.]
 
+```
 | fd                       | PROPOSED ON YYYYMMDD | INVOICED ON YYYYMMDD |
 |--------------------------|----------------------------------------------
 |START DATE                |  TBD                 |  TBD                 |
@@ -77,7 +78,7 @@ DELIVERABLE(S): [TBD: describe figure/table/data/etc.]
 |INVOICE METHOD            |  TBD                 |  TBD                 |
 |INVOICE CODE FROM STOWLER |  TBD                 |  TBD                 |
 |INVOICE CODE FROM CLIENT  |  TBD                 |  TBD                 |
-
+```
 
 
 2.3. file paths and URLs
