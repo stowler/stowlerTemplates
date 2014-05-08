@@ -66,7 +66,7 @@ References for current budgeting information:
 
 DELIVERABLE(S): [TBD: describe figure/table/data/etc.]
 
-|                          | PROPOSED ON YYYYMMDD | INVOICED ON YYYYMMDD |
+| fd                       | PROPOSED ON YYYYMMDD | INVOICED ON YYYYMMDD |
 |--------------------------|----------------------------------------------
 |START DATE                |  TBD                 |  TBD                 |
 |COMPLETION DATE           |  TBD                 |  TBD                 |
