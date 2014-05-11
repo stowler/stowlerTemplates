@@ -1,17 +1,17 @@
 #!/bin/bash
 #
-# LOCATION:	      <location including filename>
-# USAGE:	         see the fxnPrintUsage() function below 
+# LOCATION:     <location including filename>
+# USAGE:        see the fxnPrintUsage() function below 
 #
-# CREATED:	      <date> by stowler@gmail.com
-# LAST UPDATED:	<date> by stowler@gmail.com
+# CREATED:      <date> by stowler@gmail.com
+# LAST UPDATED: <date> by stowler@gmail.com
 #
 # DESCRIPTION:
 # <EDITME: description of what the script does>
 # 
 # SYSTEM REQUIREMENTS:
-#  - awk must be installed for fxnCalc
-#   <EDITME: list or describe others>
+# - awk must be installed for fxnCalc
+# <EDITME: list or describe other system requirements>
 #
 # INPUT FILES AND PERMISSIONS FOR OUTPUT:
 # <EDITME: list or describe>
@@ -20,7 +20,7 @@
 # <EDITME: list or describe>
 #
 #
-# READING AND CODING NOTES:
+# NOTES TO HELP YOU READ AND EDIT THIS SCRIPT:
 # 
 # This script contains a few first-level sections, each starting with one of these headings:
 # ------------------------- START: define functions ------------------------- #
@@ -30,15 +30,15 @@
 # ------------------------- START: restore environment and say bye to user/logs ------------------------- #
 #
 # Searchable keywords that mark areas of code:
-# EDITME :  areas that should be edited on a per-system/script/experiment/whatever basis
-# TBD :     areas where I have work to do, decisions to make, etc.
+# EDITME :  areas that should be edited to meet specific needs of system/script/experiment/whatever
+# TBD :     areas where I have work to do or decisions to make
 # DEBUG :   areas that I only intend to uncomment and execute duing debugging
 #
 # Lines starting with "###" (three hash marks) are marked as training material
 # so they can be stripped out automatically
 #
 #
-### #########!!!!!!! FOR TEMPLATE ONLY. REMOVE FROM CHILD SCRIPTS (EDITME): !!!!!!! ###########
+### #########!!!!!!! FOR TEMPLATE ONLY. REMOVE THIS BLOCK FROM CHILD SCRIPTS (EDITME): !!!!!!! ###########
 ### A meta note for editing this template :
 ###
 ### LOCATION: 
@@ -65,28 +65,28 @@
 ###    creates the variable ${tempDir} and then tries to create a new ${tempDir}
 ###    directory in the filesystem. This will be the temporary directory to which
 ###    you will send your output files from this script. 
-### 2) Paste a list of commands into the script body after calling fxnSetTempDir.
+### 3) Paste a list of commands into the script body after calling fxnSetTempDir.
 ###    This could be pretty much anything, but be sure any output files get
 ###    routed to ${tempDir}. Like such:
 ###
 ###	ls -al ~ > ${tempDir}/aListOfStuffInYourHomeDirectory.txt
-###	echo "Um. That's everything as of `date`" >> ${tempDir}/aListOfStuffInYourHomeDirectory.txt
-###	cat ${tempDir}/aListOfStuffInYourHomeDirectory.txt
+###	echo "Um. That's everything as of `date`" >> ${tempDir}/aListOfStuffInMyHomeDirectory.txt
+###	cat ${tempDir}/aListOfStuffInMyHomeDirectory.txt
 ###	echo ""
-###	echo "Scroll up to see a listing of the stuff in your home directory"
+###	echo "Scroll up to see a listing of the stuff in my home directory"
 ###	echo "as it was recorded in the recently created text file"
-###	echo "called ${tempDir}/stuffInMyHomeDirectory.txt"
+###	echo "called ${tempDir}/aListOfStuffInMyHomeDirectory.txt"
 ###	echo ""
 ###
-### 3) Execute the script to run your list of commands.
-### 4) Enjoy the ephemera appearing in the terminal window while you anticipate
+### 4) Execute the script to run your list of commands.
+### 5) Enjoy the ephemera appearing in the terminal window while you anticipate
 ###    what awaits you in ${tempDir} upon script completion. 
-### 5) Open a new terminal window and cd to the folder that was created as
+### 6) Open a new terminal window and cd to the folder that was created as
 ###    ${tempDir}. Noticing, of course, that you can't just type "cd ${tempDir}"
 ###    since the variable ${tempDir} wasn't exported from the script.  Once in
 ###    ${tempDir} issue "pwd" to confirm your location and then issue "ls" to marvel
 ###    at the bounty of files you have created.
-### 6) Do what you like with your creations and then manually delete ${tempDir}.
+### 7) Do what you like with your creations in ${tempDir} and then manually delete ${tempDir}.
 ###
 ### ADVANCED USE: (TBD)
 ###
@@ -115,7 +115,7 @@
 ### - make sure edits are reflected in fxnSelftestBasic()
 ### - test with fxnSelftestBasic() after editing
 ### 
-### ########## !!!!!!! FOR TEMPLATE-ONLY: REMOVE FROM CHILD SCRIPTS (EDITME) !!!!!!! ###########
+### ########## !!!!!!! FOR TEMPLATE-ONLY: REMOVE THIS BLOCK FROM CHILD SCRIPTS (EDITME) !!!!!!! ###########
 
 
 
@@ -128,8 +128,8 @@
 
 fxnPrintUsage() {
    # EDITME: customize for each script:
-   echo >&2 "$0 - a script to do something. Example of a usage note:"
-   echo >&2 "Usage: scriptname [-r|-n] -v file {file2 ...}"
+   echo >&2 "${scriptName} - a script to do something. Example of a usage note:"
+   echo >&2 "Usage: ${scriptName} [-r|-n] -v file {file2 ...}"
    echo >&2 "  -r   print data rows only (no column names)"
    echo >&2 "  -n   pring column names ONLY (no data rows)"
    echo >&2 "  -v   be verbose"
@@ -137,103 +137,124 @@ fxnPrintUsage() {
 
 
 fxnProcessInvocation() {
-
-# always: check for number of arguments, even if expecting zero:
-if [ "${scriptArgsCount}" -ne "0" ] ; then
-   echo ""
-   echo "ERROR: this script isn't expecting any arguments. You provided $scriptArgsCount ."
-   echo ""
-   fxnPrintUsage
-   echo ""
-   exit 1
-fi
-
-
-# when needed, process commandline arguments with getopt by removing
-# COMMENTBLOCK wrapper and editing:
-
-: <<'COMMENTBLOCK'
-# STEP 1/3: initialize any variables that receive values during argument processing:
-headingsoff=0
-headingsonly=0
-# STEP 2/3: set the getopt string:
-set -- `getopt rn: "$@"`
-# STEP 3/3: process command line switches in  a loop:
-[ $# -lt 1 ] && exit 1	# getopt failed
-while [ $# -gt 0 ]
-do
-    case "$1" in
-      -r)   headingsoff=1
-            ;;
-      -n)	headingsonly=1
-            ;;
-      --)	shift; break
-            ;;
-      -*)
-            echo >&2 "usage: $0 [-r for data row only or -n for column names only] image ..."
-             exit 1
-             ;;
-       *)	break
-            ;;		# terminate while loop
-    esac
-    shift
-done
-# now all command line switches have been processed, and "$@" contains all file names
-# check for incompatible invocation options:
-if [ "$headingsoff" != "0" ] && [ "$headingsonly" != "0" ] ; then
-   echo ""
-   echo "ERROR: cannot specify both -r and -n:"
-   echo ""
-   fxnPrintUsage
-   echo ""
-   exit 1
-fi
+   # always: check for number of arguments, even if expecting zero:
+   if [ "${scriptArgsCount}" -ne "0" ] ; then
+      echo ""
+      echo "ERROR: this script isn't expecting any arguments. It was called with $scriptArgsCount arguments."
+      echo ""
+      fxnPrintUsage
+      echo ""
+      exit 1
+   fi
+   
+   
+   # when needed, process commandline arguments with getopt by removing
+   # COMMENTBLOCK wrapper and editing:
+   
+   : <<'COMMENTBLOCK'
+   # STEP 1/3: initialize any variables that receive values during argument processing:
+   headingsoff=0
+   headingsonly=0
+   # STEP 2/3: set the getopt string:
+   set -- `getopt rn: "$@"`
+   # STEP 3/3: process command line switches in  a loop:
+   [ $# -lt 1 ] && exit 1	# getopt failed
+   while [ $# -gt 0 ]
+   do
+       case "$1" in
+         -r)   headingsoff=1
+   	    ;;
+         -n)	headingsonly=1
+   	    ;;
+         --)	shift; break
+   	    ;;
+         -*)
+   	    echo >&2 "usage: $0 [-r for data row only or -n for column names only] image ..."
+   	     exit 1
+   	     ;;
+          *)	break
+   	    ;;		# terminate while loop
+       esac
+       shift
+   done
+   # now all command line switches have been processed, and "$@" contains all file names
+   # check for incompatible invocation options:
+   if [ "$headingsoff" != "0" ] && [ "$headingsonly" != "0" ] ; then
+      echo ""
+      echo "ERROR: cannot specify both -r and -n:"
+      echo ""
+      fxnPrintUsage
+      echo ""
+      exit 1
+   fi
 COMMENTBLOCK
+# ...note that the terminal COMMENTBLOCK line above cannot be indented.
 }
 
 
 fxnSelftestBasic() {
-   # Tests the basic funcions and variables of the template on which this
-   # script is based. Valid output may appear as comment text at the bottom
-   # of this script (TBD). This can be used to confirm that the basic functions
-   # of the script are working on a particular system, or that they haven't
-   # been broken by recent edits.
+   # Tests the administrative internal funcions and variables of the template
+   # on which this script is based. For manual auditing, valid output may
+   # appear as comment text at the bottom of this script (TBD). This self-test
+   # can be used to confirm that the basic functions of the script are working
+   # on a particular system, or that they haven't been broken by recent edits.
 
-   echo "Running internal function fxnSelftestBasic :"
+   echo ""
+   echo "---------------------------------------------------"
+   echo "Running internal function 'fxnSelftestBasic' :"
+   echo "---------------------------------------------------"
    echo ""
 
    # expose the basic constants defined in the script:
-   echo "Some basic constants have been defined in this script."
-   echo "Their names are listed in variable \${listOfBasicConstants} : "
-   echo "${listOfBasicConstants}"
-   echo ""
+   echo "Some basic constants have been defined in this script:"
+   #echo "Their names are listed in variable \${listOfBasicConstants} : "
+   #echo "${listOfBasicConstants}"
+   #echo ""
    #echo "...and here are their values:"
-   #for scriptConstantName in ${listOfBasicConstants}; do
-   #   scriptConstantValue="`echo ${scriptConstantName}`"
-   #   echo "${scriptConstantName} == ${scriptConstantValue}"
-   #done
+   echo ""
+   for scriptConstantName in ${listOfBasicConstants}; do
+      echo "\$${scriptConstantName} == ${!scriptConstantName}"
+   done
+
+   echo ""
+   echo ""
+   echo "This is the usage note the user should see if asking for help or incorrectly calling the script:"
+   echo "(produced by script's internal fxn 'fxnPrintUsage')"
+   echo ""
+   fxnPrintUsage
+
 
    # test internal function fxnSetTempDir:
+   echo ""
+   echo ""
+   echo "Creating temporary directory by calling internal funciton 'fxnSetTempDir'..."
    fxnSetTempDir
    deleteTempDirAtEndOfScript=0
+   if [ -n "${tempDir}" ] && [ -d "${tempDir}" ] && [ -w "${tempDir}" ]; then
+	echo "...success: confirmed that you have file sysem write permissions for \${tempDir}:"
+	ls -ald ${tempDir}
+   else
+	echo "WARNING: was not able to create a writable temporary directory."
+   fi
+
 
    # Strip out all comments that are marked as training. This will create a
    # slimmer, more readable version of the script :
    trainingMarker='###'       # trainingMarker must be sed-friendly. See below:
-   cp ${scriptDir}/${scriptName} ${tempDir}/script-orig.sh
+   cp ${scriptPath}/${scriptName} ${tempDir}/script-orig.sh
    sed "/^${trainingMarker}/ d" ${tempDir}/script-orig.sh > ${tempDir}/script-withoutTrainingComments.sh
    linecountOrig="`wc -l ${tempDir}/script-orig.sh | awk '{print $1}'`"
    linecountSkinny="`wc -l ${tempDir}/script-withoutTrainingComments.sh | awk '{print $1}'`"
    echo ""
-   echo "This script has ${linecountOrig} lines, and the version without training comments has ${linecountSkinny} lines:"
    echo ""
+   echo "This script has ${linecountOrig} lines, and the version without training comments has ${linecountSkinny} lines:"
    ls -l ${tempDir}/*
 }
 
 
 fxnSelftestFull() {
   # Tests the full function of the script. Begins by calling fxnSelftestBaic() , and then...
-  # <EDITME: description of tests and validating data>
+  # <EDITME: add description of tests and validating data>
   fxnSelftestBasic
 }
 
@@ -252,7 +273,7 @@ fxnSetTempDir() {
    # of directory ${tempParent}, which may be set prior to calling this fxn, or
    # will be set to something sensible by this function.
    #
-   # NB: ${tempParent} might need to change on a per-system, per-script, or per-experiment, basis
+   # NB: ${tempParent} might need to change on a per-system, per-script, or per-experiment basis.
    #    If tempParent or tempDir needs to include identifying information from the script,
    #    remember to assign values before calling fxnSetTempDir !
    #    e.g., tempParent=${participantDirectory}/manyTempProcessingDirsForThisParticipant && fxnSetTempDir()
@@ -261,7 +282,7 @@ fxnSetTempDir() {
    tempParentPrevouslySetToWritableDir=''
    hostname=`hostname -s`
    kernel=`uname -s`
-   if [ -n "${tempParent}"] && [ -d "${tempParent}" ] && [ -w "${tempParent}" ]; then
+   if [ -n "${tempParent}" ] && [ -d "${tempParent}" ] && [ -w "${tempParent}" ]; then
       tempParentPreviouslySetToWritableDir=1
    elif [ $hostname = "stowler-mba" ]; then
       tempParent="/Users/stowler/temp"
@@ -280,7 +301,7 @@ fxnSetTempDir() {
 
    # Now that writable ${tempParent} has been confirmed, create ${tempDir}:
    # e.g., tempDir="${tempParent}/${startDateTime}-from_${scriptName}.${scriptPID}"
-   tempDir="${tempParent}/${startDateTime}-from_${scriptName}.${scriptPID}"
+   tempDir="${tempParent}/${startDateTime}-tempDirFrom_${scriptName}.${scriptPID}.d"
    mkdir ${tempDir}
    if [ $? -ne 0 ] ; then
       echo ""
@@ -380,34 +401,65 @@ COMMENTBLOCK
 listOfBasicConstants=''	
 
 scriptName="`basename $0`"
-listOfBasicConstants="\$scriptName ${listOfBasicConstants}"
+listOfBasicConstants="${listOfBasicConstants} scriptName"
 
-scriptDir="`dirname $0`"
-listOfBasicConstants="\$scriptDir ${listOfBasicConstants}"
+# getting scriptPath is non-trivial, and this is adapted from
+# http://stackoverflow.com/a/12197518 :
+pushd . > /dev/null
+SCRIPT_PATH="${BASH_SOURCE[0]}";
+while([ -h "${SCRIPT_PATH}" ]); do
+    cd "`dirname "${SCRIPT_PATH}"`"
+    SCRIPT_PATH="$(readlink "`basename "${SCRIPT_PATH}"`")";
+done
+cd "`dirname "${SCRIPT_PATH}"`" > /dev/null
+scriptPath="`pwd`";
+popd  > /dev/null
+listOfBasicConstants="${listOfBasicConstants} scriptPath"
+# less robust 1-line solution:
+# scriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+scriptPWD="`pwd`"
+listOfBasicConstants="${listOfBasicConstants} scriptPWD"
+
+scriptHostname="`hostname`"
+listOfBasicConstants="${listOfBasicConstants} scriptHostname"
+
+scriptUnameOS="`uname -s`"
+listOfBasicConstants="${listOfBasicConstants} scriptUnameOS"
+
+scriptUnameLong="`uname -a`"
+listOfBasicConstants="${listOfBasicConstants} scriptUnameLong"
 
 scriptPID="$$"
-listOfBasicConstants="\$scriptPID ${listOfBasicConstants}"
+listOfBasicConstants="${listOfBasicConstants} scriptPID"
 
 scriptArgsCount=$#
-listOfBasicConstants="\$scriptArgsCount ${listOfBasicConstants}"
+listOfBasicConstants="${listOfBasicConstants} scriptArgsCount"
 
 scriptUser="`whoami`"
-listOfBasicConstants="\$scriptUser ${listOfBasicConstants}"
+listOfBasicConstants="${listOfBasicConstants} scriptUser"
 
 startDate="`date +%Y%m%d`"
-listOfBasicConstants="\$startDate ${listOfBasicConstants}"
+listOfBasicConstants="${listOfBasicConstants} startDate"
 
 startDateTime="`date +%Y%m%d%H%M%S`"
-listOfBasicConstants="\$startDateTime ${listOfBasicConstants}"
+listOfBasicConstants="${listOfBasicConstants} startDateTime"
+
+deleteTempDirAtEndOfScript=0
+listOfBasicConstants="${listOfBasicConstants} deleteTempDirAtEndOfScript"
 
 # echo "DEBUG: \${listOfBasicConstants} is:"
 # echo "${listOfBasicConstants}"
+
 
 
 # ------------------------- FINISH: define basic script constants ------------------------- #
 
 
 # ------------------------- START: greet user/logs ------------------------- #
+
+clear 
+
 echo ""
 echo ""
 echo "#################################################################"
@@ -421,11 +473,11 @@ echo ""
 
 # ------------------------- START: body of script ------------------------- #
 
-### To keep things simple, you could just paste a list of commands on the lines
-### immediately below this comment, save the script under a new name, and run it.
-### This would work because by default this template script isn't expecting to
-### receive arguments on the commandline or automatically write anything to the
-### filesystem (though it does have those powers...see below). 
+### To keep things simple, you could just paste a list of commands in the blank
+### space immediately below this comment block, save the script under a new name,
+### and run it.  This would work because by default this template script isn't
+### expecting to receive arguments on the commandline or automatically write
+### anything to the filesystem (though it does have those powers...see below).
 ### Paste commands here if that's all you need right now:
 
 
@@ -433,12 +485,15 @@ echo ""
 ### ...or, to be fancier, you could first call one or more of the internal
 ### functions defined in this script template. They are designed to make your
 ### script-writing easier, and you can inspect their code right here in
-### this file. Consider starting your script with one or more of these internal
-### functions. Then the lines that do the real work of your script should appear
-### after the function calls:
-
+### this file. Consider starting your script by calling one or more of these internal
+### functions, followed by the lines that do the real work of your script.
+### 
+### For example, you could uncomment any of these four internal function calls
+### and then paste your material lines in the space after the calls :
+###
 ### 1) If this script needs to generate output files, it might be nice to create
-###    an informatively-named temporary directory ${tempDir} as their destination.
+###    an informatively-named temporary directory on disk and save its location
+###    to variable ${tempDir}, which you can then call throught this script.
 ###    To do so just uncomment these two lines:
 ###
 #fxnSetTempDir                 # <- use internal function to create ${tempDir}
@@ -475,14 +530,18 @@ fxnSelftestBasic
 
 
 
+### After calling internal script functions above, paste the lines for completing
+### the script's real work below this comment block.
+###
 ### For long processes that get called from this script, the user (or log reviwer) might
 ### like to have some context. Uncomment out this block of banners and place your call
 ### to someProgramThatJustTakesForever.sh inside of them:
+###
 : <<'COMMENTBLOCK'
 echo ""
 echo ""
 echo "================================================================="
-echo "START: do some stuff EDITME"
+echo "START: do some stuff (EDITME: add real one-line description)"
 echo "(should take about EDITME minutes)"
       date
 echo "================================================================="
@@ -494,7 +553,7 @@ echo "(EDITME) If this line weren't just a placeholder in the template I'd be ex
 echo ""
 echo ""
 echo "================================================================="
-echo "FINISHED: did some stuff EDITME "
+echo "FINISHED: did some stuff  (EDITME: add real one-line description)"
       date
 echo "================================================================="
 echo ""
@@ -513,13 +572,14 @@ COMMENTBLOCK
 
 # If a ${tempDir} was defined, remind the user about it and (optionally) delete it:
 if [ -n "${tempDir}" ]; then 
-	tempDirSize=`du -sh | cut -d ' ' -f 1`
+	#tempDirSize=`du -sh ${tempDir} | cut -d ' ' -f 1`
+	tempDirSize=`du -sh ${tempDir} | cut -f 1`
 	tempDirFileCount=`find ${tempDir} | wc -l`
 	echo ""
 	echo ""
-	echo "This script's temporary directory is ${tempDir}"
-	echo "...and it contains: ${tempDirFileCount} files and folders taking up total disk space of ${tempDirSize}"
+	echo "Script complete. This script's temporary directory is:"
 	ls -ld ${tempDir}
+	echo "...and it contains: ${tempDirFileCount} files and folders taking up total disk space of ${tempDirSize}"
 	echo ""
 	# if previously indicated, delete $tempDir
 	if [ ${deleteTempDirAtEndOfScript} = "1" ]; then
@@ -529,7 +589,6 @@ if [ -n "${tempDir}" ]; then
       echo "Proof of removal per \"ls -ld \${tempDir}\" :"
 		ls -ld ${tempDir}
 	fi
-	echo ""
 	echo ""
 fi
 
