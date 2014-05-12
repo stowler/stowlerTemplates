@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # LOCATION:     <location including filename>
-# USAGE:        see the fxnPrintUsage() function below 
+# USAGE:        see internal function below: fxnPrintUsage() 
 #
 # CREATED:      <date> by stowler@gmail.com
 # LAST UPDATED: <date> by stowler@gmail.com
@@ -10,7 +10,7 @@
 # <EDITME: description of what the script does>
 # 
 # SYSTEM REQUIREMENTS:
-# - awk must be installed for fxnCalc
+# - awk must be installed for fxnCalc()
 # <EDITME: list or describe other system requirements>
 #
 # INPUT FILES AND PERMISSIONS FOR OUTPUT:
@@ -32,11 +32,16 @@
 # Searchable keywords that mark areas of code:
 # EDITME :  areas that should be edited to meet specific needs of system/script/experiment/whatever
 # TBD :     areas where I have work to do or decisions to make
-# DEBUG :   areas that I only intend to uncomment and execute duing debugging
+# DEBUG :   areas that I only intend to uncomment and execute during debugging
 #
-# Lines starting with "###" (three hash marks) are marked as training material
-# so they can be stripped out automatically
+# Three has marks ("###") at the beginning of a line mark the line as a comment
+# containing training material. This allows the reader to find or skip over
+# training material as needed, and allows a shorter version of the script to be
+# created by filtering out those training lines.
 #
+# TBD: implement quiet mode so only summary appears
+# TBD: add pretty borders to the summary table
+# TBD: usage and self-test if no arguments given
 #
 ### #########!!!!!!! FOR TEMPLATE ONLY. REMOVE THIS BLOCK FROM CHILD SCRIPTS (EDITME): !!!!!!! ###########
 ### A meta note for editing this template :
@@ -127,136 +132,42 @@
 
 
 fxnPrintUsage() {
-   # EDITME: customize for each script:
-   echo >&2 "${scriptName} - a script to do something. Example of a usage note:"
-   echo >&2 "Usage: ${scriptName} [-r|-n] -v file {file2 ...}"
-   echo >&2 "  -r   print data rows only (no column names)"
-   echo >&2 "  -n   pring column names ONLY (no data rows)"
-   echo >&2 "  -v   be verbose"
+cat <<endOfTextBlock
+
+###############################################################################
+#
+# ${scriptName} - EDITME: a script to do something. 
+#
+# EDITME: a slightly longer description of what the script does, probably
+# requiring a few lines. Maybe describe the output here. And any return
+# codes. This is followed by syntax guidance, in which square brackets ("[]")
+# generally indicate optional arguments, angle brackets ("<>") generally
+# indicate required arguments, and the pipe symbol ("|") indicates an
+# exclusive choice among multiple options.  Example of short syntax guidance
+# with all options on one line: 
+#
+# Usage: ${scriptName} [-r|-n] [-v] <file1> [file2 ...]
+#   -r   print data rows only (no column names)
+#   -n   pring column names ONLY (no data rows)
+#   -v   be verbose
+#
+###############################################################################
+
+endOfTextBlock
+# NB: the terminal "endOfTextBlock" line above must not be indented.
 }
 
 
-fxnProcessInvocation() {
-   # always: check for number of arguments, even if expecting zero:
-   if [ "${scriptArgsCount}" -ne "0" ] ; then
-      echo ""
-      echo "ERROR: this script isn't expecting any arguments. It was called with $scriptArgsCount arguments."
-      echo ""
-      fxnPrintUsage
-      echo ""
-      exit 1
-   fi
-   
-   
-   # when needed, process commandline arguments with getopt by removing
-   # COMMENTBLOCK wrapper and editing:
-   
-   : <<'COMMENTBLOCK'
-   # STEP 1/3: initialize any variables that receive values during argument processing:
-   headingsoff=0
-   headingsonly=0
-   # STEP 2/3: set the getopt string:
-   set -- `getopt rn: "$@"`
-   # STEP 3/3: process command line switches in  a loop:
-   [ $# -lt 1 ] && exit 1	# getopt failed
-   while [ $# -gt 0 ]
-   do
-       case "$1" in
-         -r)   headingsoff=1
-   	    ;;
-         -n)	headingsonly=1
-   	    ;;
-         --)	shift; break
-   	    ;;
-         -*)
-   	    echo >&2 "usage: $0 [-r for data row only or -n for column names only] image ..."
-   	     exit 1
-   	     ;;
-          *)	break
-   	    ;;		# terminate while loop
-       esac
-       shift
-   done
-   # now all command line switches have been processed, and "$@" contains all file names
-   # check for incompatible invocation options:
-   if [ "$headingsoff" != "0" ] && [ "$headingsonly" != "0" ] ; then
-      echo ""
-      echo "ERROR: cannot specify both -r and -n:"
-      echo ""
-      fxnPrintUsage
-      echo ""
-      exit 1
-   fi
-COMMENTBLOCK
-# ...note that the terminal COMMENTBLOCK line above cannot be indented.
+
+fxnPrintDebug() {
+  # A function called to print debugging information but only if the debug
+  # variable is set to 1.
+  
+  if [ "${debug}" = "1" ]; then 
+     echo "////// DEBUG: ///// $@"
+  fi
 }
 
-
-fxnSelftestBasic() {
-   # Tests the administrative internal funcions and variables of the template
-   # on which this script is based. For manual auditing, valid output may
-   # appear as comment text at the bottom of this script (TBD). This self-test
-   # can be used to confirm that the basic functions of the script are working
-   # on a particular system, or that they haven't been broken by recent edits.
-
-   echo ""
-   echo "---------------------------------------------------"
-   echo "Running internal function 'fxnSelftestBasic' :"
-   echo "---------------------------------------------------"
-   echo ""
-
-   # expose the basic constants defined in the script:
-   echo "Some basic constants have been defined in this script:"
-   #echo "Their names are listed in variable \${listOfBasicConstants} : "
-   #echo "${listOfBasicConstants}"
-   #echo ""
-   #echo "...and here are their values:"
-   echo ""
-   for scriptConstantName in ${listOfBasicConstants}; do
-      echo "\$${scriptConstantName} == ${!scriptConstantName}"
-   done
-
-   echo ""
-   echo ""
-   echo "This is the usage note the user should see if asking for help or incorrectly calling the script:"
-   echo "(produced by script's internal fxn 'fxnPrintUsage')"
-   echo ""
-   fxnPrintUsage
-
-
-   # test internal function fxnSetTempDir:
-   echo ""
-   echo ""
-   echo "Creating temporary directory by calling internal funciton 'fxnSetTempDir'..."
-   fxnSetTempDir
-   deleteTempDirAtEndOfScript=0
-   if [ -n "${tempDir}" ] && [ -d "${tempDir}" ] && [ -w "${tempDir}" ]; then
-	echo "...success: confirmed that you have file sysem write permissions for \${tempDir}:"
-	ls -ald ${tempDir}
-   else
-	echo "WARNING: was not able to create a writable temporary directory."
-   fi
-
-
-   # Strip out all comments that are marked as training. This will create a
-   # slimmer, more readable version of the script :
-   trainingMarker='###'       # trainingMarker must be sed-friendly. See below:
-   cp ${scriptPath}/${scriptName} ${tempDir}/script-orig.sh
-   sed "/^${trainingMarker}/ d" ${tempDir}/script-orig.sh > ${tempDir}/script-withoutTrainingComments.sh
-   linecountOrig="`wc -l ${tempDir}/script-orig.sh | awk '{print $1}'`"
-   linecountSkinny="`wc -l ${tempDir}/script-withoutTrainingComments.sh | awk '{print $1}'`"
-   echo ""
-   echo ""
-   echo "This script has ${linecountOrig} lines, and the version without training comments has ${linecountSkinny} lines:"
-   ls -l ${tempDir}/*
-}
-
-
-fxnSelftestFull() {
-  # Tests the full function of the script. Begins by calling fxnSelftestBaic() , and then...
-  # <EDITME: add description of tests and validating data>
-  fxnSelftestBasic
-}
 
 
 fxnCalc() {
@@ -268,6 +179,7 @@ fxnCalc() {
 }
 
 
+
 fxnSetTempDir() {
    # Attempt to create a temporary directory ${tempDir} .  It will be a child
    # of directory ${tempParent}, which may be set prior to calling this fxn, or
@@ -275,16 +187,19 @@ fxnSetTempDir() {
    #
    # NB: ${tempParent} might need to change on a per-system, per-script, or per-experiment basis.
    #    If tempParent or tempDir needs to include identifying information from the script,
-   #    remember to assign values before calling fxnSetTempDir !
+   #    just remember to assign values before calling fxnSetTempDir !
    #    e.g., tempParent=${participantDirectory}/manyTempProcessingDirsForThisParticipant && fxnSetTempDir()
+   fxnPrintDebug "Starting fxnSetTempDir ..."
 
-   # Is $tempParent already defined as a writable directory? If not, try to define a reasonable one:
+   # Is $tempParent already defined as a writable directory? If not, try to define a reasonable one here:
    tempParentPrevouslySetToWritableDir=''
    hostname=`hostname -s`
    kernel=`uname -s`
-   if [ -n "${tempParent}" ] && [ -d "${tempParent}" ] && [ -w "${tempParent}" ]; then
+   fxnPrintDebug "\$tempParent is currently set to ${tempParent}"
+   if [ ! -z "${tempParent}" ] && [ -d "${tempParent}" ] && [ -w "${tempParent}" ]; then
       tempParentPreviouslySetToWritableDir=1
-   elif [ $hostname = "stowler-mba" ]; then
+      fxnPrintDebug "\$tempParentPreviouslySetToWritableDir=1"
+   elif [ $hostname = "stowler-rmbp" ]; then
       tempParent="/Users/stowler/temp"
    elif [ $kernel = "Linux" ] && [ -d /tmp ] && [ -w /tmp ]; then
       tempParent="/tmp"
@@ -295,25 +210,263 @@ fxnSetTempDir() {
 	    create a new temporary directory. Edit script's $tempParent variable. Exiting."
       exit 1
    fi
-   # echo "DEBUG"
-   # echo "DEBUG: \${tempParent} is ${tempParent}"
-   # echo "DEBUG:"
+   fxnPrintDebug "\${tempParent} is now ${tempParent}"
 
    # Now that writable ${tempParent} has been confirmed, create ${tempDir}:
-   # e.g., tempDir="${tempParent}/${startDateTime}-from_${scriptName}.${scriptPID}"
+   # e.g., tempDir="${tempParent}/${startDateTime}-tempDirFrom_${scriptName}.${scriptPID}.d"
    tempDir="${tempParent}/${startDateTime}-tempDirFrom_${scriptName}.${scriptPID}.d"
-   mkdir ${tempDir}
-   if [ $? -ne 0 ] ; then
+   fxnPrintDebug "\${tempDir} has been set to ${tempDir}"
+   # does this $tempDir already exit? if so, don't try to make it again:
+   if [ -d "${tempDir}" ] && [ -w "${tempDir}" ]; then
       echo ""
-      echo "ERROR: fxnSetTempDir was unable to create temporary directory ${tempDir}."
-      echo 'You may want to confirm the location and permissions of ${tempParent}, which is understood as:'
-      echo "${tempParent}"
+      echo "Can't create this new temporary directory because it already exists as a writable directory:"
+      echo "${tempDir}"
       echo ""
-      echo "Exiting."
+   else
+      mkdir ${tempDir}
+      if [ $? -ne 0 ] ; then
+         echo ""
+         echo "ERROR: fxnSetTempDir was unable to create temporary directory ${tempDir}."
+         echo 'You may want to confirm the location and permissions of ${tempParent}, which is understood as:'
+         echo "${tempParent}"
+         echo ""
+         echo "Exiting."
+         echo ""
+         exit 1
+      else
+         echo ""
+         echo "A temporary directory has been created:"
+         echo "${tempDir}"
+         ls -ald "${tempDir}"
+         echo ""
+      fi
+   fi
+   fxnPrintDebug "...completed fxnSetTempDir ."
+}
+
+
+fxnProcessInvocation() {
+   fxnPrintDebug "Starting fxnProcessInvocation..."
+
+   # If not using getopt to process arguments (see further down), at least
+   # check for the correct number of arguments. Or you could do both:
+   if [ "${scriptArgsCount}" -ne "0" ] ; then
+      echo ""
+      echo "ERROR: this script is expecting exactly zero arguments, but it was called with ${scriptArgsCount} arguments."
+      echo ""
+      fxnPrintUsage
       echo ""
       exit 1
    fi
+
+
+   # When needed, process commandline arguments with getopt by removing
+   # COMMENTBLOCK wrapper and editing:
+   
+   : <<'COMMENTBLOCK'
+   # Process commandline arguments with getopt:
+   # (recalling it can't handle arguments with spaces in them)
+   #
+   # The blocks below may look excessively complex, but the debugging really helps as
+   # arguments with spaces and platform incompatibilies need to be dealt with.
+   
+   
+   # STEP 1/3: initialize any variables that receive values during argument processing:
+   # (see while loop below for a list of those variables)
+   launchSelftest=''
+   factorName=''
+   levelNameList=''
+   levelScript=''
+   # ...and if already set, $debug must not lose its current value:
+   #if [ -n ${debug} ] ; then debug=${debug} ; else debug=''; fi
+   if [ -n ${debug} ] ; then echo "" ; else debug=''; fi
+   
+   
+   # STEP 2/3: set the getopt string:
+   
+   fxnPrintDebug ""
+   fxnPrintDebug "getopt debugging: These are the the variables manipulated while preparing to process arguments:"
+   fxnPrintDebug ""
+   fxnPrintDebug "getopt debugging:   \$scriptArgsVector : the vector of arguments called at script launch"
+   fxnPrintDebug "getopt debugging:   \$scriptArgsCount  : the number of arguments called at script launch"
+   fxnPrintDebug "getopt debugging:   \$@ - working vector of arguments"
+   fxnPrintDebug 'getopt debugging:   $# - working count of arguments'
+   fxnPrintDebug ""
+   fxnPrintDebug "getopt debugging: Values before executing 'eval set -- \${scriptArgsVector}' :"
+   fxnPrintDebug "getopt debugging: \${scriptArgsVector}=${scriptArgsVector}"
+   fxnPrintDebug "getopt debugging: \${scriptArgsCount}=${scriptArgsCount}"
+   fxnPrintDebug "getopt debugging: \${@}=${@}"
+   fxnPrintDebug "getopt debugging: \${#}=${#}"
+   fxnPrintDebug ""
+   
+   # ...part a of step 2:
+   fxnPrintDebug 'getopt debugging: a) assign contents of ${scriptArgsVector} to $@ :'
+   eval set -- ${scriptArgsVector}
+   fxnPrintDebug "getopt debugging: ...done. Values after executing 'eval set -- \${scriptArgsVector}' :"
+   fxnPrintDebug "getopt debugging: \${scriptArgsVector}=${scriptArgsVector}"
+   fxnPrintDebug "getopt debugging: \${scriptArgsCount}=${scriptArgsCount}"
+   fxnPrintDebug "getopt debugging: \${@}=${@}"
+   fxnPrintDebug "getopt debugging: \${#}=${#}"
+   fxnPrintDebug ""
+   
+   
+   # ...part b of step 2:
+   fxnPrintDebug "getopt debugging: b) use getopt command to parse \$@ and assign result to \$parsedArgs:"
+   parsedArgs=`getopt -- tdf:l:s: "$@"`
+   if [ $? != 0 ] ; then 
+      echo "Terminating...could not set string for getopt. Check out the Usage note:" >&2 
+      fxnPrintUsage 
+      exit 1 
+   fi
+   fxnPrintDebug "getopt debugging: ...done. Values after executing 'parsedArgs=\`getopt ... \$@\`' :"
+   fxnPrintDebug "getopt debugging: \${scriptArgsVector}=${scriptArgsVector}"
+   fxnPrintDebug "getopt debugging: \${scriptArgsCount}=${scriptArgsCount}"
+   fxnPrintDebug "getopt debugging: \${@}=${@}"
+   fxnPrintDebug "getopt debugging: \${#}=${#}"
+   fxnPrintDebug "getopt debugging: \${parsedArgs}=${parsedArgs}"
+   fxnPrintDebug ""
+   
+   
+   # ...part c of step 2:
+   fxnPrintDebug "getopt debugging: c) generate final arguments (\$1, \$2, etc.) for while loop:"
+   eval set -- "${parsedArgs}"
+   fxnPrintDebug "getopt debugging: ...done. Values after 'eval set -- \${parsedArgs}\' :"
+   fxnPrintDebug "getopt debugging: (i.e., immeditaly prior to while loop)"
+   fxnPrintDebug 'getopt debugging: (notice that getopt changes $@ and $#, not $scriptArgsVector or $scriptArgsCount)'
+   fxnPrintDebug "getopt debugging: \${scriptArgsVector}=${scriptArgsVector}"
+   fxnPrintDebug "getopt debugging: \${scriptArgsCount}=${scriptArgsCount}"
+   fxnPrintDebug "getopt debugging: \${@}=${@}"
+   fxnPrintDebug "getopt debugging: \${#}=${#}"
+   fxnPrintDebug "getopt debugging: \${parsedArgs}=${parsedArgs}"
+   fxnPrintDebug ""
+
+
+   # STEP 3/3: process the command line switches:
+   fxnPrintDebug "getopt debugging: executing the while loop to act on the parsed arguments:"
+   while true ; do
+       fxnPrintDebug "\$1=${1}"
+       case "$1" in
+         -s)   levelScript="${2}"; shift 2 ;;
+         -f)   factorName="${2}" ; shift 2 ;;
+         -l)   levelNameList="${2}"; shift 2 ;;
+         -t)   launchSelftest="1" ; shift ;;
+         -d)   debug="1" ;  shift ;;
+         --)   shift; break ;;
+         -*)   echo >&2 "usage: $0 -s [levelScript] -f [factorLabel] -l [factorLevelList]" exit 1 ;;
+          *)   echo "Error in arguments to ${scriptName}" ; fxnPrintUsage ; exit 1 ;;		# terminate while loop
+       esac
+   done
+   
+   # ...and now all command line switches have been processed.
+   fxnPrintDebug "getopt debugging: ...done. Values after the getopt while loop :"
+   fxnPrintDebug "getopt debugging: \${scriptArgsVector}=${scriptArgsVector}"
+   fxnPrintDebug "getopt debugging: \${scriptArgsCount}=${scriptArgsCount}"
+   fxnPrintDebug "getopt debugging: \${@}=${@}"
+   fxnPrintDebug "getopt debugging: \${#}=${#}"
+   fxnPrintDebug "getopt debugging: \${parsedArgs}=${parsedArgs}"
+   
+   
+   # check for incompatible invocation options:
+   # if [ "$headingsoff" != "0" ] && [ "$headingsonly" != "0" ] ; then
+   #    echo ""
+   #    echo "ERROR: cannot specify both -r and -n:"
+   #    echo ""
+   #    fxnPrintUsage
+   #    echo ""
+   #    exit 1
+   # fi
+   
+   # if we're showing debug messages, include this final check of invocation
+   # variables before returning from fxn:
+   fxnPrintDebug ""
+   fxnPrintDebug "\${launchSelftest}=${launchSelftest}"
+   fxnPrintDebug "\${debug}=${debug}"
+   fxnPrintDebug "\${factorName}=${factorName}"
+   fxnPrintDebug "\${levelNameList}=${levelNameList}"
+   fxnPrintDebug "\${levelScript}=${levelScript}"
+   fxnPrintDebug "...completed fxnProcessInvocation ."
+   fxnPrintDebug ""
+   
+
+COMMENTBLOCK
+# ...note that the terminal COMMENTBLOCK line above cannot be indented.
+
 }
+
+
+fxnSelftestBasic() {
+   # Tests the administrative internal functions and variables of the template
+   # on which this script is based. This self-test can be used to confirm that
+   # the basic functions of the script are working on a particular system, or
+   # that they haven't been broken by recent edits. For manual auditing, valid
+   # output may appear as comment text at the bottom of this script (TBD). 
+
+   #obviously(?) we want to turn on debugging if we're going to bother with a self-test:
+   debug=1
+   fxnPrintDebug "Launching internal fxnSelftestBasic ..."
+
+   # First test small functions with no or few dependencies:
+
+   # ...fxnPrintDebug:
+
+   # ...fxnCalc:
+
+   # Now test more complex internal functions in the order in which they are designed to be
+   # called from the script body:
+
+
+   # 1) not really a function, but start by exposing the basic constants defined in this script:
+   fxnPrintDebug ""
+   fxnPrintDebug "Some basic administrative constants have been defined in this script:"
+   fxnPrintDebug ""
+   for scriptConstantName in ${listOfBasicConstants}; do
+      echo "\$${scriptConstantName} == ${!scriptConstantName}"
+   done
+
+   # 2) fxnSetTempDir :
+   fxnPrintDebug ""
+   fxnPrintDebug "Creating temporary directory by calling this script's internal function 'fxnSetTempDir' :"
+   fxnSetTempDir
+   deleteTempDirAtEndOfScript=0
+   if [ ! -z  "${tempDir}" ] && [ -d "${tempDir}" ] && [ -w "${tempDir}" ]; then
+	fxnPrintDebug "...success: confirmed that you have file sysem write permissions for \${tempDir}:"
+	ls -aldh ${tempDir}
+	fxnPrintDebug "...with its final destiny set by \${deleteTempDirAtEndOfScript} == ${deleteTempDirAtEndOfScript}"
+	fxnPrintDebug ""
+   else
+	echo "WARNING: was not able to create a writable temporary directory."
+	exit 1
+   fi
+
+   # 3) fxnPrintUsage :
+   fxnPrintDebug ""
+   fxnPrintDebug "Below is the usage note the user should see if asking for help or incorrectly calling this script:"
+   fxnPrintDebug "(produced by script's internal function 'fxnPrintUsage')"
+   fxnPrintDebug ""
+   fxnPrintUsage
+
+   # Strip out all comments that are marked as training. This will create a
+   # slimmer, more readable version of the script :
+   trainingMarker='###'       # trainingMarker must be sed-friendly. See below:
+   fxnPrintDebug "Removing training comments from the current script (lines prepended with '${trainingMarker}' ...)"
+   cp ${scriptPath}/${scriptName} ${tempDir}/script-orig.sh
+   sed "/^${trainingMarker}/ d" ${tempDir}/script-orig.sh > ${tempDir}/script-withoutTrainingComments.sh
+   linecountOrig="`wc -l ${tempDir}/script-orig.sh | awk '{print $1}'`"
+   linecountSkinny="`wc -l ${tempDir}/script-withoutTrainingComments.sh | awk '{print $1}'`"
+   fxnPrintDebug "...done removing training comments."
+   fxnPrintDebug "The current script (${scriptName}) has ${linecountOrig} lines, and I have generated a version"
+   fxnPrintDebug "without training comments that has ${linecountSkinny} lines:"
+   ls -l ${tempDir}/*
+   fxnPrintDebug "Completed internal function fxnSelftestBasic ."
+}
+
+
+fxnSelftestFull() {
+  # Tests the full function of the script. Begins by calling fxnSelftestBaic() , and then...
+  # <EDITME: add description of tests and validating data>
+  fxnSelftestBasic
+}
+
 
 
 fxnSetSomeFancyConstants() {
@@ -393,12 +546,11 @@ COMMENTBLOCK
 ### Create some constants to make basic system information convenient for
 ### the script. These are technically variables but we are calling them
 ### constants because their values don't change during script execution.
-###
 
 # NB: these are per-script constants, so it's safer to define them here rather
 # than in an internal function.
 
-listOfBasicConstants=''	
+listOfBasicConstants=''
 
 scriptName="`basename $0`"
 listOfBasicConstants="${listOfBasicConstants} scriptName"
@@ -433,6 +585,9 @@ listOfBasicConstants="${listOfBasicConstants} scriptUnameLong"
 scriptPID="$$"
 listOfBasicConstants="${listOfBasicConstants} scriptPID"
 
+scriptArgsVector="${@}"
+listOfBasicConstants="${listOfBasicConstants} scriptArgsCount"
+
 scriptArgsCount=$#
 listOfBasicConstants="${listOfBasicConstants} scriptArgsCount"
 
@@ -458,7 +613,7 @@ listOfBasicConstants="${listOfBasicConstants} deleteTempDirAtEndOfScript"
 
 # ------------------------- START: greet user/logs ------------------------- #
 
-clear 
+clear
 
 echo ""
 echo ""
@@ -495,7 +650,8 @@ echo ""
 ###    an informatively-named temporary directory on disk and save its location
 ###    to variable ${tempDir}, which you can then call throught this script.
 ###    To do so just uncomment these two lines:
-###
+
+# Setup a temporary directory, which can be configured for clean-up:
 #fxnSetTempDir                 # <- use internal function to create ${tempDir}
 #deleteTempDirAtEndOfScript=1  # <- set to 1 to delete ${tempDir} or 0 to leave it. See end of script.
 
